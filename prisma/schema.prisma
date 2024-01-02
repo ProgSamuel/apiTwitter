@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  idUser    String      @id @default(uuid()) @map("id_user") @db.Uuid
+  name      String      @db.VarChar(20)
+  email     String      @unique @db.VarChar(50)
+  username  String      @unique @db.VarChar(30)
+  password  String      @db.VarChar(30)
+  twitters  Twitter[]   @relation("UserToTwitter")
+  followers Followers[] @relation("FollowerToUser")
+
+  dthrCreated DateTime @default(now()) @map("dt_hr_created")
+  dthrUpdated DateTime @updatedAt @map("dt_hr_updated")
+  likes       Like[]   @relation("LikeToUser")
+  replies     Reply[]  @relation("ReplyToUser")
+
+  @@map("user")
+}
+
+model Like {
+  userId    String   @id @default(uuid()) @db.Uuid
+  user      User?    @relation(fields: [userId], references: [idUser], name: "LikeToUser")
+  twitterId String?  @db.Uuid
+  twitter   Twitter? @relation(fields: [twitterId], references: [idTwitter], name: "LikeToTwitter")
+
+  @@map("likes")
+}
+
+model Reply {
+  idReply      String   @id @default(uuid()) @map("id_reply") @db.Uuid
+  userId       String   @db.Uuid
+  user         User?    @relation(fields: [userId], references: [idUser], name: "ReplyToUser")
+  twitterId    String?  @db.Uuid
+  twitter      Twitter? @relation(fields: [twitterId], references: [idTwitter], name: "ReplyToTwitter")
+  replyContent String   @map("reply_content") @db.VarChar(144)
+
+  dthrCreated DateTime @default(now()) @map("dt_hr_created")
+  dthrUpdated DateTime @updatedAt @map("dt_hr_updated")
+
+  @@map("reply")
+}
+
+model Twitter {
+  idTwitter String @id @default(uuid()) @map("id_twitter") @db.Uuid
+  content   String @db.VarChar(144)
+  type      String
+
+  dthrCreated DateTime @default(now()) @map("dt_hr_created")
+  dthrUpdated DateTime @updatedAt @map("dt_hr_updated")
+
+  userId  String  @db.Uuid
+  user    User?   @relation(fields: [userId], references: [idUser], name: "UserToTwitter")
+  likes   Like[]  @relation("LikeToTwitter")
+  replies Reply[] @relation("ReplyToTwitter")
+
+  @@map("twitter")
+}
+
+model Followers {
+  userId      String   @id @db.Uuid
+  user        User?    @relation(fields: [userId], references: [idUser], name: "FollowerToUser")
+  dthrCreated DateTime @default(now()) @map("dt_hr_created")
+  dthrUpdated DateTime @updatedAt @map("dt_hr_updated")
+
+  @@map("followers")
+}
