@@ -17,6 +17,16 @@ export class Twitter {
     ) {
         this.idTwitter = randomUUID()
         this.dthrCreated = Date.now(),
-            this.dthrUpdate = new Date()
+        this.dthrUpdate = new Date()
     }
+
+
+    toTwitterCreateInput() {
+        return {
+         content : this.content,
+         type: this.type,
+         idUser: this.idUser
+
+        };
+      }
 }
