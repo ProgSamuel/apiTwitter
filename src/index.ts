@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import cors from 'cors';
 import { UserController } from "./Controllers/user.controller";
 import { TwitterController } from "./Controllers/twitter.controller";
+import { checkId } from "./middlewares/checkId";
 
 const app = express();
 app.use(express.json());
@@ -12,8 +13,8 @@ const twitterController = new TwitterController()
 app.post('/createuser', userController.createUser) 
 // fazer o MIDD
 app.post('/user/login', userController.login)
-app.get('/user/:idUser', userController.searcheUser)
-app.post('/user/:idUser/createtwitter', twitterController.createTwitter )
+app.get('/user/:idUser', checkId, userController.searcheUser)
+app.post('/user/:idUser/createtwitter', checkId,twitterController.createTwitter )
 
 app.listen(3335, () => {
     console.log("A API está rodando!");
