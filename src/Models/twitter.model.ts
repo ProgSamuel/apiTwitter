@@ -12,8 +12,8 @@ export class Twitter {
 
     constructor(
         public content: string,
-        public type: string,
-        public idUser: string
+        public idUser: string,
+        public type:"normal" | "reply"
     ) {
         this.idTwitter = randomUUID()
         this.dthrCreated = Date.now(),

@@ -88,6 +88,105 @@ export class UserController {
         }
     }
 
+    // Update User
+    public async updateUser(req: Request, res: Response) {
+        try {
+            // input
+            const { idUser } = req.params
+            const { name, email, username, password } = req.body
+    
+            if (!name && !email && !username && !password) return res.status(400).send({
+                ok: false,
+                message: "Enter at least one field to update! Name, email, username or password."
+            })
+    
+            // processing
+            const user = await repository.user.findFirst({
+                where: { idUser }
+            })
+    
+            !user && notFound(res, 'User')
+            if (email) {
+                const checkEmail = await repository.user.findFirst({
+                    where: { email },
+                })
+                checkEmail && existing(res, "Email")
+            }
+    
+            if (username) {
+                const checkUsername = await repository.user.findFirst({
+                    where: { username },
+                })
+                checkUsername && existing(res, "Username")
+            }
+    
+            const result = await repository.user.update({
+                where: {
+                    idUser
+                },
+                data: {
+                    name,
+                    email,
+                    username,
+                    password,
+                    dthrUpdated: new Date
+                }, 
+                select: {
+                    name:true,
+                    email:true,
+                    username:true,
+                    dthrUpdated:true,
+                }
+            })
+    
+            // output
+    
+            return res.status(200).send({
+                ok: true,
+                message: "update done successfully!",
+                data: {
+                    result
+                }
+            })
+        } catch (error: any) {
+            return serverError(res, error)
+
+        }
+
+    }
+
+    // Delete User
+    public async deleteUser(req:Request, res:Response){
+        try {
+            //input
+            const {idUser} = req.params
+            const user = await repository.user.findFirst({
+                where: { idUser }
+            })
+
+            !user && notFound(res, 'User')
+            // processing
+            const name = user?.name
+            const result = await repository.user.delete({
+                where:{
+                    idUser
+                }
+            })
+
+            // output
+
+            res.status(200).send({
+                ok: true,
+                message:`${name} was excluded.`
+            })
+
+
+        } catch (error: any) {
+            return serverError(res, error)
+
+        }
+    }
+
     // Search user
     public async searcheUser(req: Request, res: Response) {
         try {
@@ -112,6 +211,34 @@ export class UserController {
         } catch (error: any) {
             return serverError(res, error)
 
+        }
+    }
+
+    // [] follow
+
+    public async followUser(req: Request, res: Response) {
+        try {
+            // input 
+            //idUser de quem começa a seguir
+            // idUser de quem foi seguido 
+            const { idUser } = req.params
+            const { idUserFollow } = req.body
+
+            !idUser || !idUserFollow && fieldsNotProvided(res)
+
+            // processing
+            // verificar se foi passado os users
+            // verificar se os usuarios existem
+            // o user não pode seguir a si mesmo
+            // fazer processo de seguir
+
+
+            // output
+            // retorno de processo concluído
+
+
+        } catch (error) {
+            return serverError(res, error)
         }
     }
 }

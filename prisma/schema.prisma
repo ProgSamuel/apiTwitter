@@ -38,12 +38,12 @@ model Like {
 }
 
 model Reply {
-  idReply      String   @id @default(uuid()) @map("id_reply") @db.Uuid
-  userId       String   @db.Uuid
-  user         User?    @relation(fields: [userId], references: [idUser], name: "ReplyToUser")
-  twitterId    String?  @db.Uuid
-  twitter      Twitter? @relation(fields: [twitterId], references: [idTwitter], name: "ReplyToTwitter")
-  replyContent String   @map("reply_content") @db.VarChar(144)
+  idTwitter     String   @id @default(uuid()) @map("id_reply") @db.Uuid
+  userId        String   @db.Uuid
+  user          User?    @relation(fields: [userId], references: [idUser], name: "ReplyToUser")
+  twitterOrigin String?  @db.Uuid
+  twitter       Twitter? @relation(fields: [twitterOrigin], references: [idTwitter], name: "ReplyToTwitter")
+  replyContent  String   @map("reply_content") @db.VarChar(144)
 
   dthrCreated DateTime @default(now()) @map("dt_hr_created")
   dthrUpdated DateTime @updatedAt @map("dt_hr_updated")
