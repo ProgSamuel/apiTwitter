@@ -31,7 +31,6 @@ export class ReplyController {
             const reply = new Reply(idUser, idTwitter, content, type)
             const result = await repository.reply.create({
                 data: {
-                    idTwitter,
                     userId: idUser,
                     twitterOrigin: idTwitter,
                     replyContent: content
@@ -44,6 +43,117 @@ export class ReplyController {
 
 
             return successfully(res, "Reply", result)
+
+        } catch (error: any) {
+            return serverError(res, error)
+        }
+    }
+
+    // UPDATE REPLY
+
+    public async updaterEPLY(req: Request, res: Response) {
+        try {
+            // input
+            const { idUser, idTwitter } = req.params
+            const { content } = req.body
+
+            const user = await repository.user.findUnique({
+                where: {
+                    idUser
+                }
+            })
+            !user && notFound(res, "User")
+
+            !content && fieldsNotProvided(res)
+            const twitter = await repository.reply.findUnique({
+                where: {
+                    idTwitter
+                }
+            })
+            !twitter && notFound(res, "Twitter")
+
+            //processing
+            const idUserTwitter = twitter?.userId
+
+            if (idUser !== idUserTwitter) {
+                return res.status(409).send({
+                    ok: false,
+                    message: "Data conflict: Twitter does not match the User id entered."
+                })
+            }
+
+
+            const result = await repository.reply.update({
+                where: {
+                    idTwitter
+                },
+                data: {
+                    replyContent:content,
+                    dthrUpdated: new Date
+                },
+                select: {
+                    replyContent: true,
+                    dthrUpdated: true
+                }
+            })
+
+            // output
+
+            res.status(200).send({
+                ok: true,
+                message: "Updated twitter",
+                data: {
+                    result
+                }
+            })
+
+        } catch (error: any) {
+            return serverError(res, error)
+        }
+    }
+
+    // DELETE REPLY
+    public async deleteReply(req: Request, res: Response) {
+        try {
+            // input
+            const { idUser, idTwitter } = req.params
+
+            // processing
+            const user = await repository.user.findUnique({
+                where: {
+                    idUser
+                }
+            })
+            !user && notFound(res, "User")
+
+            const twitter = await repository.reply.findUnique({
+                where: {
+                    idTwitter
+                }
+            })
+            !twitter && notFound(res, "Twitter")
+
+            const idUserTwitter = twitter?.userId
+
+            if (idUser !== idUserTwitter) {
+                return res.status(409).send({
+                    ok: false,
+                    message: "Data conflict: Twitter does not match the User id entered."
+                })
+            }
+
+            const result = await repository.reply.delete({
+                where: {
+                    idTwitter
+                }
+            })
+
+            return res.status(200).send({
+                ok: true,
+                message: "Twitter deleted"
+            })
+
+            // output
 
         } catch (error: any) {
             return serverError(res, error)

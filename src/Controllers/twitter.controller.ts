@@ -36,6 +36,44 @@ export class TwitterController {
         }
     }
 
+    //VIEW TWITTERS
+    public async viewTwitters(req: Request, res: Response) {
+        try {
+            //input 
+            const { idUser } = req.params
+
+            const user = await repository.user.findUnique({
+                where: {
+                    idUser
+                }
+            })
+            !user && notFound(res, "User")
+            const twitters = await repository.twitter.findMany({
+                select: {
+                    content: true,
+                    dthrUpdated: true,
+                    replies: {
+                        select: {
+                            replyContent: true,
+                            dthrUpdated: true
+                        }
+                    }
+                },
+            })
+
+            // output 
+            return res.status(200).send({
+                ok: true,
+                message: "Your home",
+                data: twitters
+
+            })
+
+        } catch (error: any) {
+            return serverError(res, error)
+        }
+    }
+
     // UPDATE TT
     public async updateTwitter(req: Request, res: Response) {
         try {
