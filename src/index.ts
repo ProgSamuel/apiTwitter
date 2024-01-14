@@ -19,22 +19,22 @@ const likeController = new LikeController()
 app.post('/createuser', userController.createUser) //  CRIAR USER
 app.post('/user/login', userController.login) // LOGIN
 // app.get('/user/:idUser', userController.searcheUser) // BUSCAR - TESTE 
-app.put('/user/:idUser/updateUser', userController.updateUser) // ATUALIZAR
-app.delete('/user/:idUser/delete', userController.deleteUser) // APAGAR
+app.put('/user/:idUser/updateUser', checkId, userController.updateUser) // ATUALIZAR
+app.delete('/user/:idUser/delete', checkId, userController.deleteUser) // APAGAR
 
 // TWITTER
-app.get('/user/:idUser/home',twitterController.viewTwitters)
-app.post('/user/:idUser/createtwitter',twitterController.createTwitter ) // CRIAR TT
-app.put('/user/:idUser/updateTwitter/:idTwitter',twitterController.updateTwitter) // UPDATE TT
-app.delete('/user/:idUser/deleteTwitter/:idTwitter', twitterController.deleteTwitter) // DELETE TT
+app.get('/user/:idUser/home', checkId,twitterController.viewTwitters)
+app.post('/user/:idUser/createtwitter', checkId,twitterController.createTwitter ) // CRIAR TT
+app.put('/user/:idUser/updateTwitter/:idTwitter', checkId,twitterController.updateTwitter) // UPDATE TT
+app.delete('/user/:idUser/deleteTwitter/:idTwitter', checkId, twitterController.deleteTwitter) // DELETE TT
 
 // REPLY
-app.post('/user/:idUser/reply/:idTwitter', replyController.replyTwitter) // CRIAR REPLY
-app.put('/user/:idUser/updateReply/:idTwitter',replyController.updaterEPLY)// UPDATE REPLY
-app.delete('/user/:idUser/deleteReply/:idTwitter',replyController.deleteReply)// DELETE REPLY
+app.post('/user/:idUser/reply/:idTwitter', checkId, replyController.replyTwitter) // CRIAR REPLY
+app.put('/user/:idUser/updateReply/:idTwitter', checkId,replyController.updaterEPLY)// UPDATE REPLY
+app.delete('/user/:idUser/deleteReply/:idTwitter', checkId,replyController.deleteReply)// DELETE REPLY
 
 // LIKE
-app.post('/user/:idUser/like/:twitterId', likeController.likeTwitter) // LIKE and DESLIKE in TT
+app.post('/user/:idUser/like/:twitterId', checkId, likeController.likeTwitter) // LIKE and DESLIKE in TT
 
 
 app.listen(3335, () => {

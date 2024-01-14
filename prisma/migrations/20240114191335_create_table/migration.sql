@@ -31,7 +31,7 @@ CREATE TABLE "likes" (
     "twitterId" UUID,
     "dt_hr_created" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "dt_hr_updated" TIMESTAMP(3) NOT NULL,
-    "replyIdTwitter" UUID,
+    "replyId" UUID,
 
     CONSTRAINT "likes_pkey" PRIMARY KEY ("idLike")
 );
@@ -79,7 +79,7 @@ ALTER TABLE "likes" ADD CONSTRAINT "likes_idUser_fkey" FOREIGN KEY ("idUser") RE
 ALTER TABLE "likes" ADD CONSTRAINT "likes_twitterId_fkey" FOREIGN KEY ("twitterId") REFERENCES "twitter"("id_twitter") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "likes" ADD CONSTRAINT "likes_replyIdTwitter_fkey" FOREIGN KEY ("replyIdTwitter") REFERENCES "reply"("id_reply") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "likes" ADD CONSTRAINT "likes_replyId_fkey" FOREIGN KEY ("replyId") REFERENCES "reply"("id_reply") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "twitter" ADD CONSTRAINT "twitter_idUser_fkey" FOREIGN KEY ("idUser") REFERENCES "user"("id_user") ON DELETE RESTRICT ON UPDATE CASCADE;
