@@ -52,10 +52,20 @@ export class TwitterController {
                 select: {
                     content: true,
                     dthrUpdated: true,
+                    likes:{
+                        select:{
+                            idUser:true,
+                        }
+                    },
                     replies: {
                         select: {
                             replyContent: true,
-                            dthrUpdated: true
+                            dthrUpdated: true,
+                            likes: {
+                                select:{
+                                    idUser:true,
+                                }
+                            }
                         }
                     }
                 },
@@ -183,55 +193,4 @@ export class TwitterController {
             return serverError(res, error)
         }
     }
-
-    // [] like
-    public async likeTwitter(req: Request, res: Response) {
-        try {
-            // input
-            const { idUser } = req.params
-            const { idTwitter } = req.body
-
-            if (!idUser || !idTwitter) fieldsNotProvided(res)
-
-
-            // processing
-            const user = await repository.user.findUnique({
-                where: {
-                    idUser
-                }
-            })
-            const twitter = await repository.twitter.findUnique({
-                where: { idTwitter }
-            })
-
-            const receivedLike = twitter?.idUser
-
-
-            const receivedLikeName = await repository.user.findUnique({
-                where: {
-                    idUser: receivedLike
-                }
-            })
-
-            !twitter || !user && notFound(res, "Twitter or User")
-
-            const like = new Like(idUser, idTwitter)
-
-            const result = await repository.like.create({
-                data: like
-            })
-
-            //output
-
-            return res.status(200).send({
-                ok: true,
-                message: `You liked ${receivedLikeName?.name || ''}'s twitter!`,
-                data: result
-            })
-
-        } catch (error: any) {
-            return serverError(res, error)
-        }
-    }
-
 }

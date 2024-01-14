@@ -28,7 +28,7 @@ export class ReplyController {
             // processing 
 
             const type = "reply"
-            const reply = new Reply(idUser, idTwitter, content, type)
+            new Reply(idUser, idTwitter, content, type)
             const result = await repository.reply.create({
                 data: {
                     userId: idUser,
@@ -37,7 +37,8 @@ export class ReplyController {
                 },
                 select:{
                     replyContent: true,
-                    dthrUpdated: true
+                    dthrUpdated: true, 
+                    likes:true
                 }
             })
 

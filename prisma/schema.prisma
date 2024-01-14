@@ -28,27 +28,41 @@ model User {
   @@map("user")
 }
 
-model Like {
-  idUser    String   @id @default(uuid()) @db.Uuid
-  user      User?    @relation(fields: [idUser], references: [idUser], name: "LikeToUser")
-  twitterId String?  @db.Uuid
-  twitter   Twitter? @relation(fields: [twitterId], references: [idTwitter], name: "LikeToTwitter")
-
-  @@map("likes")
-}
-
 model Reply {
-  idTwitter     String   @id @default(uuid()) @map("id_reply") @db.Uuid
-  userId        String   @db.Uuid
-  user          User?    @relation(fields: [userId], references: [idUser], name: "ReplyToUser")
+  idTwitter String @id @default(uuid()) @map("id_reply") @db.Uuid
+
+  userId String @db.Uuid
+  user   User?  @relation(fields: [userId], references: [idUser], name: "ReplyToUser")
+
   twitterOrigin String?  @db.Uuid
   twitter       Twitter? @relation(fields: [twitterOrigin], references: [idTwitter], name: "ReplyToTwitter")
-  replyContent  String   @map("reply_content") @db.VarChar(144)
+
+  replyContent String @map("reply_content") @db.VarChar(144)
+
+  likes Like[] @relation("LikeToReply")
 
   dthrCreated DateTime @default(now()) @map("dt_hr_created")
   dthrUpdated DateTime @updatedAt @map("dt_hr_updated")
 
   @@map("reply")
+}
+
+model Like {
+  idLike String @id @default(uuid()) @db.Uuid
+  idUser String @default(uuid()) @db.Uuid
+  user   User?  @relation(fields: [idUser], references: [idUser], name: "LikeToUser")
+
+  twitterId String?  @db.Uuid
+  twitter   Twitter? @relation(fields: [twitterId], references: [idTwitter], name: "LikeToTwitter")
+
+  dthrCreated DateTime @default(now()) @map("dt_hr_created")
+  dthrUpdated DateTime @updatedAt @map("dt_hr_updated")
+
+  replyId String? @db.Uuid
+  reply   Reply?  @relation(fields: [replyId], references: [idTwitter], name: "LikeToReply")
+
+  @@unique([idUser, twitterId])
+  @@map("likes")
 }
 
 model Twitter {
