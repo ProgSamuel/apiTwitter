@@ -13,9 +13,6 @@ export class UserController {
             const { email, username, password } = req.body
             if (!email && !username || !password) return fieldsNotProvided(res);
 
-
-
-
             // processing
             const checkEmail = await repository.user.findFirstOrThrow({
                 where: { email },
@@ -183,7 +180,6 @@ export class UserController {
 
         } catch (error: any) {
             return serverError(res, error)
-
         }
     }
 
@@ -214,31 +210,4 @@ export class UserController {
         }
     }
 
-    // [] follow
-
-    public async followUser(req: Request, res: Response) {
-        try {
-            // input 
-            //idUser de quem começa a seguir
-            // idUser de quem foi seguido 
-            const { idUser } = req.params
-            const { idUserFollow } = req.body
-
-            !idUser || !idUserFollow && fieldsNotProvided(res)
-
-            // processing
-            // verificar se foi passado os users
-            // verificar se os usuarios existem
-            // o user não pode seguir a si mesmo
-            // fazer processo de seguir
-
-
-            // output
-            // retorno de processo concluído
-
-
-        } catch (error) {
-            return serverError(res, error)
-        }
-    }
 }

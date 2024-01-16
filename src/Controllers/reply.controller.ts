@@ -23,7 +23,7 @@ export class ReplyController {
                     idTwitter
                 }
             })
-            !twitter && notFound(res, "Twitter")
+            !twitter && notFound(res, "Tweet")
 
             // processing 
 
@@ -71,7 +71,7 @@ export class ReplyController {
                     idTwitter
                 }
             })
-            !twitter && notFound(res, "Twitter")
+            !twitter && notFound(res, "Tweet")
 
             //processing
             const idUserTwitter = twitter?.userId
@@ -79,10 +79,9 @@ export class ReplyController {
             if (idUser !== idUserTwitter) {
                 return res.status(409).send({
                     ok: false,
-                    message: "Data conflict: Twitter does not match the User id entered."
+                    message: "Data conflict: Tweet does not match the User id entered."
                 })
             }
-
 
             const result = await repository.reply.update({
                 where: {
@@ -132,18 +131,18 @@ export class ReplyController {
                     idTwitter
                 }
             })
-            !twitter && notFound(res, "Twitter")
+            !twitter && notFound(res, "Tweet")
 
             const idUserTwitter = twitter?.userId
 
             if (idUser !== idUserTwitter) {
                 return res.status(409).send({
                     ok: false,
-                    message: "Data conflict: Twitter does not match the User id entered."
+                    message: "Data conflict: Tweet does not match the User id entered."
                 })
             }
 
-            const result = await repository.reply.delete({
+            await repository.reply.delete({
                 where: {
                     idTwitter
                 }

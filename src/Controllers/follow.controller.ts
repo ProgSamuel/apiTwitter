@@ -42,7 +42,6 @@ export class FollowController {
                 })
             }
 
-
             // processing
             const result = await repository.followers.create({
                 data: {

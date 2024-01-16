@@ -18,20 +18,21 @@ const likeController = new LikeController()
 const followController = new FollowController()
 
 // USER
-app.post('/createuser', userController.createUser) //  CRIAR USER
+app.post('/createuser', userController.createUser) //  CREATE USER
 app.post('/user/login', userController.login) // LOGIN
-// app.get('/user/:idUser', userController.searcheUser) // BUSCAR - TESTE 
-app.put('/user/:idUser/updateUser', checkId, userController.updateUser) // ATUALIZAR
-app.delete('/user/:idUser/delete', checkId, userController.deleteUser) // APAGAR
+// app.get('/user/:idUser', userController.searcheUser) // SEARCH - TESTE 
+app.put('/user/:idUser/updateUser', checkId, userController.updateUser) // UPDATE
+app.delete('/user/:idUser/delete', checkId, userController.deleteUser) // DELETE
 
-// TWITTER
-app.get('/user/:idUser/home', checkId,twitterController.viewTwitters)
-app.post('/user/:idUser/createtwitter', checkId,twitterController.createTwitter ) // CRIAR TT
-app.put('/user/:idUser/updateTwitter/:idTwitter', checkId,twitterController.updateTwitter) // UPDATE TT
-app.delete('/user/:idUser/deleteTwitter/:idTwitter', checkId, twitterController.deleteTwitter) // DELETE TT
+// TWEETS
+app.get('/user/:idUser/home', checkId,twitterController.viewTweets) // VIEW ALL TWEETE
+app.post('/user/:idUser/createtwitter', checkId,twitterController.createTweet ) // CREATE TWEETE
+app.put('/user/:idUser/updateTwitter/:idTwitter', checkId,twitterController.updateTweet) // UPDATE TWEETE
+app.delete('/user/:idUser/deleteTwitter/:idTwitter', checkId, twitterController.deleteTweet) // DELETE TWEETE
+app.get('/user/:idUser',checkId,  twitterController.tweetsUser) // VIEW USER TWEET
 
 // REPLY
-app.post('/user/:idUser/reply/:idTwitter', checkId, replyController.replyTwitter) // CRIAR REPLY
+app.post('/user/:idUser/reply/:idTwitter', checkId, replyController.replyTwitter) // CREATE REPLY
 app.put('/user/:idUser/updateReply/:idTwitter', checkId,replyController.updaterEPLY)// UPDATE REPLY
 app.delete('/user/:idUser/deleteReply/:idTwitter', checkId,replyController.deleteReply)// DELETE REPLY
 

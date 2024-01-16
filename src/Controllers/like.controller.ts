@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import repository from "../database/prisma.repository";
 import { notFound, serverError } from "../Utils/response.helper";
-import { error } from "console";
-import { randomUUID } from "crypto";
+
 
 export class LikeController {
     // CREATE LIKE
@@ -27,7 +26,7 @@ export class LikeController {
                         where: { idTwitter: twitterId }
                     })
 
-                    !reply && notFound(res, "Twitte")
+                    !reply && notFound(res, "Tweet")
 
                     const existingLike = await repository.like.findFirst({
                         where: {
