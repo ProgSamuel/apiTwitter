@@ -5,6 +5,7 @@ import { TwitterController } from "./Controllers/twitter.controller";
 import { checkId } from "./middlewares/checkId";
 import { ReplyController } from "./Controllers/reply.controller";
 import { LikeController } from "./Controllers/like.controller";
+import { FollowController } from "./Controllers/follow.controller";
 
 const app = express();
 app.use(express.json());
@@ -14,6 +15,7 @@ const userController = new UserController()
 const twitterController = new TwitterController()
 const replyController = new ReplyController()
 const likeController = new LikeController()
+const followController = new FollowController()
 
 // USER
 app.post('/createuser', userController.createUser) //  CRIAR USER
@@ -35,6 +37,9 @@ app.delete('/user/:idUser/deleteReply/:idTwitter', checkId,replyController.delet
 
 // LIKE
 app.post('/user/:idUser/like/:twitterId', checkId, likeController.likeTwitter) // LIKE and DESLIKE in TT
+
+//FOLLOW
+app.post('/user/:idUser/follow/:idFollow', checkId, followController.follow )
 
 
 app.listen(3335, () => {

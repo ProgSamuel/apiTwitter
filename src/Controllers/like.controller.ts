@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import repository from "../database/prisma.repository";
 import { notFound, serverError } from "../Utils/response.helper";
 import { error } from "console";
+import { randomUUID } from "crypto";
 
 export class LikeController {
     // CREATE LIKE
@@ -9,6 +10,12 @@ export class LikeController {
         try {
             // input
             const { idUser, twitterId } = req.params;
+
+            const user = await repository.user.findFirst({
+                where: { idUser }, select: { username: true, idUser: true, following: true }
+            })
+
+            !user && notFound(res, "User")
 
             const twitter = await repository.twitter.findUnique({
                 where: { idTwitter: twitterId }
@@ -20,10 +27,12 @@ export class LikeController {
                         where: { idTwitter: twitterId }
                     })
 
+                    !reply && notFound(res, "Twitte")
+
                     const existingLike = await repository.like.findFirst({
                         where: {
                             idUser,
-                            replyId: twitterId,
+                            replyId: reply?.idTwitter,
                         }, select: {
                             idLike: true,
                             idUser: true,
@@ -48,13 +57,18 @@ export class LikeController {
                     const likeReply = await repository.like.create({
                         data: {
                             idUser,
-                            replyId: twitterId
+                            replyId: twitterId,
+                        },
+                        select:{
+                            idUser:true,
+                            replyId:true,
+                            dthrUpdated:true
                         }
                     })
 
                     return res.status(200).send({
                         ok: true,
-                        message: `You liked the tweet!`,
+                        message: `${user?.username} liked the tweet!`,
                         data:likeReply
                     });
 
@@ -104,7 +118,7 @@ export class LikeController {
             // output
             return res.status(200).send({
                 ok: true,
-                message: `You liked the tweet!`,
+                message: `${user?.username} liked the tweet!`,
                 data: result,
             });
 

@@ -17,7 +17,8 @@ model User {
   username  String      @unique @db.VarChar(30)
   password  String      @db.VarChar(30)
   twitters  Twitter[]   @relation("UserToTwitter")
-  followers Followers[] @relation("FollowerToUser")
+  following Followers[] @relation("FollowerToUser")
+  followers Followers[] @relation("Following")
   token     String?     @db.VarChar(50)
 
   dthrCreated DateTime @default(now()) @map("dt_hr_created")
@@ -82,8 +83,13 @@ model Twitter {
 }
 
 model Followers {
-  idUser      String   @id @db.Uuid
-  user        User?    @relation(fields: [idUser], references: [idUser], name: "FollowerToUser")
+  id     String @id @default(uuid()) @db.Uuid
+  idUser String @db.Uuid
+  user   User?  @relation(fields: [idUser], references: [idUser], name: "FollowerToUser")
+
+  idFollowing String @db.Uuid
+  following   User?  @relation(fields: [idFollowing], references: [idUser], name: "Following")
+
   dthrCreated DateTime @default(now()) @map("dt_hr_created")
   dthrUpdated DateTime @updatedAt @map("dt_hr_updated")
 
