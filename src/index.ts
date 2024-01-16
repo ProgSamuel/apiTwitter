@@ -39,7 +39,7 @@ app.delete('/user/:idUser/deleteReply/:idTwitter', checkId,replyController.delet
 app.post('/user/:idUser/like/:twitterId', checkId, likeController.likeTwitter) // LIKE and DESLIKE in TT
 
 //FOLLOW
-app.post('/user/:idUser/follow/:idFollow', checkId, followController.follow )
+app.post('/user/:idUser/follow/:idFollow', checkId, followController.follow ) // FOLLOW and UNFOLLOW
 
 
 app.listen(3335, () => {
