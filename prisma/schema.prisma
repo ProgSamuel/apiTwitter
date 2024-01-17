@@ -20,6 +20,7 @@ model User {
   following Followers[] @relation("FollowerToUser")
   followers Followers[] @relation("Following")
   token     String?     @db.VarChar(50)
+  photo     String?     @db.VarChar(100)
 
   dthrCreated DateTime @default(now()) @map("dt_hr_created")
   dthrUpdated DateTime @updatedAt @map("dt_hr_updated")
@@ -33,9 +34,9 @@ model Reply {
   idTwitter String @id @default(uuid()) @map("id_reply") @db.Uuid
 
   userId String @db.Uuid
-  user   User?  @relation(fields: [userId], references: [idUser], name: "ReplyToUser")
+  user   User   @relation(fields: [userId], references: [idUser], name: "ReplyToUser")
 
-  twitterOrigin String?  @db.Uuid
+  twitterOrigin String   @db.Uuid
   twitter       Twitter? @relation(fields: [twitterOrigin], references: [idTwitter], name: "ReplyToTwitter")
 
   replyContent String @map("reply_content") @db.VarChar(144)
@@ -51,7 +52,7 @@ model Reply {
 model Like {
   idLike String @id @default(uuid()) @db.Uuid
   idUser String @default(uuid()) @db.Uuid
-  user   User?  @relation(fields: [idUser], references: [idUser], name: "LikeToUser")
+  user   User   @relation(fields: [idUser], references: [idUser], name: "LikeToUser")
 
   twitterId String?  @db.Uuid
   twitter   Twitter? @relation(fields: [twitterId], references: [idTwitter], name: "LikeToTwitter")
@@ -75,7 +76,7 @@ model Twitter {
   dthrUpdated DateTime @updatedAt @map("dt_hr_updated")
 
   idUser  String  @db.Uuid
-  user    User?   @relation(fields: [idUser], references: [idUser], name: "UserToTwitter")
+  user    User    @relation(fields: [idUser], references: [idUser], name: "UserToTwitter")
   likes   Like[]  @relation("LikeToTwitter")
   replies Reply[] @relation("ReplyToTwitter")
 
@@ -85,10 +86,10 @@ model Twitter {
 model Followers {
   id     String @id @default(uuid()) @db.Uuid
   idUser String @db.Uuid
-  user   User?  @relation(fields: [idUser], references: [idUser], name: "FollowerToUser")
+  user   User   @relation(fields: [idUser], references: [idUser], name: "FollowerToUser")
 
   idFollowing String @db.Uuid
-  following   User?  @relation(fields: [idFollowing], references: [idUser], name: "Following")
+  following   User   @relation(fields: [idFollowing], references: [idUser], name: "Following")
 
   dthrCreated DateTime @default(now()) @map("dt_hr_created")
   dthrUpdated DateTime @updatedAt @map("dt_hr_updated")
