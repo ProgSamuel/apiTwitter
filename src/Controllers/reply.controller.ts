@@ -12,12 +12,6 @@ export class ReplyController {
             const { content } = req.body
 
             !content && fieldsNotProvided(res)
-            const user = await repository.user.findUnique({
-                where: {
-                    idUser
-                }
-            })
-            !user && notFound(res, "User")
             const twitter = await repository.twitter.findUnique({
                 where: {
                     idTwitter
@@ -52,18 +46,11 @@ export class ReplyController {
 
     // UPDATE REPLY
 
-    public async updaterEPLY(req: Request, res: Response) {
+    public async updaterReply(req: Request, res: Response) {
         try {
             // input
             const { idUser, idTwitter } = req.params
             const { content } = req.body
-
-            const user = await repository.user.findUnique({
-                where: {
-                    idUser
-                }
-            })
-            !user && notFound(res, "User")
 
             !content && fieldsNotProvided(res)
             const twitter = await repository.reply.findUnique({
@@ -119,12 +106,6 @@ export class ReplyController {
             const { idUser, idTwitter } = req.params
 
             // processing
-            const user = await repository.user.findUnique({
-                where: {
-                    idUser
-                }
-            })
-            !user && notFound(res, "User")
 
             const twitter = await repository.reply.findUnique({
                 where: {

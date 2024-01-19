@@ -98,11 +98,6 @@ export class UserController {
             })
     
             // processing
-            const user = await repository.user.findFirst({
-                where: { idUser }
-            })
-    
-            !user && notFound(res, 'User')
             if (email) {
                 const checkEmail = await repository.user.findFirst({
                     where: { email },
@@ -137,7 +132,6 @@ export class UserController {
             })
     
             // output
-    
             return res.status(200).send({
                 ok: true,
                 message: "update done successfully!",

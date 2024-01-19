@@ -8,16 +8,11 @@ export class TwitterController {
     public async createTweet(req: Request, res: Response) {
         try {
             // input
-            const { idUser } = req.params
+            const { idUser } = req.params 
             const { content } = req.body
 
             !content && fieldsNotProvided(res)
-            const user = await repository.user.findUnique({
-                where: {
-                    idUser
-                }
-            })
-            !user && notFound(res, "User")
+            
 
             // processing 
             const type = "normal"
@@ -38,15 +33,7 @@ export class TwitterController {
     //VIEW ALL TWEETS
     public async viewTweets(req: Request, res: Response) {
         try {
-            //input 
-            const { idUser } = req.params
 
-            const user = await repository.user.findUnique({
-                where: {
-                    idUser
-                }
-            })
-            !user && notFound(res, "User")
             const tweets = await repository.twitter.findMany({
                 select: {
                     content: true,
@@ -121,13 +108,6 @@ export class TwitterController {
             const { idUser, idTwitter } = req.params
             const { content } = req.body
 
-            const user = await repository.user.findUnique({
-                where: {
-                    idUser
-                }
-            })
-            !user && notFound(res, "User")
-
             !content && fieldsNotProvided(res)
             const tweet = await repository.twitter.findUnique({
                 where: {
@@ -183,12 +163,6 @@ export class TwitterController {
             const { idUser, idTwitter } = req.params
 
             // processing
-            const user = await repository.user.findUnique({
-                where: {
-                    idUser
-                }
-            })
-            !user && notFound(res, "User")
 
             const tweet = await repository.twitter.findUnique({
                 where: {

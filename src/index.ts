@@ -33,7 +33,7 @@ app.get('/user/:idUser',checkId,  twitterController.tweetsUser) // VIEW USER TWE
 
 // REPLY
 app.post('/user/:idUser/reply/:idTwitter', checkId, replyController.replyTwitter) // CREATE REPLY
-app.put('/user/:idUser/updateReply/:idTwitter', checkId,replyController.updaterEPLY)// UPDATE REPLY
+app.put('/user/:idUser/updateReply/:idTwitter', checkId,replyController.updaterReply)// UPDATE REPLY
 app.delete('/user/:idUser/deleteReply/:idTwitter', checkId,replyController.deleteReply)// DELETE REPLY
 
 // LIKE
