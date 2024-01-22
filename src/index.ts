@@ -6,6 +6,7 @@ import { checkId } from "./middlewares/checkId";
 import { ReplyController } from "./Controllers/reply.controller";
 import { LikeController } from "./Controllers/like.controller";
 import { FollowController } from "./Controllers/follow.controller";
+import { StartController } from "./Controllers/start.controller";
 
 const app = express();
 app.use(express.json());
@@ -16,6 +17,10 @@ const twitterController = new TwitterController()
 const replyController = new ReplyController()
 const likeController = new LikeController()
 const followController = new FollowController()
+const startController = new StartController()
+
+// START
+app.get('/', startController.start )
 
 // USER
 app.post('/createuser', userController.createUser) //  CREATE USER
