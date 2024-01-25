@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import repository from "../database/prisma.repository";
 import { notFound, serverError } from "../Utils/response.helper";
+import { User } from "../Models/user.model";
 
 
 export class LikeController {
@@ -21,57 +22,7 @@ export class LikeController {
             })
 
             if (!twitter) {
-                try {
-                    const reply = await repository.reply.findUnique({
-                        where: { idTwitter: twitterId }
-                    })
-
-                    !reply && notFound(res, "Tweet")
-
-                    const existingLike = await repository.like.findFirst({
-                        where: {
-                            idUser,
-                            replyId: reply?.idTwitter,
-                        }, select: {
-                            idLike: true,
-                            idUser: true,
-                            replyId: true,
-                        }
-                    });
-
-                    if (existingLike) {
-                        await repository.like.delete({
-                            where: {
-                                idUser,
-                                replyId: twitterId,
-                                idLike: existingLike.idLike
-                            }
-                        })
-                        return res.status(200).json({
-                            ok: true,
-                            message: "Like deleted! As I had already given a like previously, with this request, the like was removed.",
-                        });
-                    }
-
-                    const likeReply = await repository.like.create({
-                        data: {
-                            idUser,
-                            replyId: twitterId,
-                        },
-                        select:{
-                            idUser:true,
-                            replyId:true,
-                            dthrUpdated:true
-                        }
-                    })
-
-                    return res.status(200).send({
-                        ok: true,
-                        message: `${user?.username} liked the tweet!`,
-                        data:likeReply
-                    });
-
-                } catch (error) { return serverError(res, error) }
+               return this.likeReply(req, res, twitterId, idUser, user)
             }
 
 
@@ -125,5 +76,59 @@ export class LikeController {
         } catch (error: any) {
             return serverError(res, error);
         }
+    }
+
+    private async likeReply  (req:Request, res:Response, twitterId:string, idUser:string, user:any){
+        try {
+            const reply = await repository.reply.findUnique({
+                where: { idTwitter: twitterId }
+            })
+
+            !reply && notFound(res, "Tweet")
+
+            const existingLike = await repository.like.findFirst({
+                where: {
+                    idUser,
+                    replyId: reply?.idTwitter,
+                }, select: {
+                    idLike: true,
+                    idUser: true,
+                    replyId: true,
+                }
+            });
+
+            if (existingLike) {
+                await repository.like.delete({
+                    where: {
+                        idUser,
+                        replyId: twitterId,
+                        idLike: existingLike.idLike
+                    }
+                })
+                return res.status(200).json({
+                    ok: true,
+                    message: "Like deleted! As I had already given a like previously, with this request, the like was removed.",
+                });
+            }
+
+            const likeReply = await repository.like.create({
+                data: {
+                    idUser,
+                    replyId: twitterId,
+                },
+                select:{
+                    idUser:true,
+                    replyId:true,
+                    dthrUpdated:true
+                }
+            })
+
+            return res.status(200).send({
+                ok: true,
+                message: `${user?.username} liked the tweet!`,
+                data:likeReply
+            });
+
+        } catch (error) { return serverError(res, error) }
     }
 }
