@@ -27,18 +27,12 @@ export class UserController {
                 where: { email, username },select:{
                     name:true,
                     username:true,
-                    dthrCreated:true,
-                    dthrUpdated:true,
                     email:true,
-                    followers:true,
-                    following:true,
                     token:true,
                     password:true,
                     photo:true,
                     idUser:true,
-                    likes:true,
                     twitters:true,
-                    replies:true,
                 }
             })
 
