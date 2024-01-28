@@ -57,7 +57,7 @@ export class UserController {
             return res.status(200).send({
                 ok: true,
                 message: 'Login ok',
-                data: {userLog:{user},tweetsLoaded:{tweets}}
+                data: {userLog:user,tweetsLoaded:tweets}
             })
 
 
