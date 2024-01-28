@@ -24,17 +24,7 @@ export class UserController {
             if (!checkEmail && !checkUsername) return notFound(res, "Email o username")
 
             const user = await repository.user.findFirst({
-                where: { email, username },
-                //  select:{
-                //     twitters:true,
-                //     password:true,
-                //     idUser:true,
-                //     username:true,
-                //     token:true,
-                //     name:true,
-                //     photo:true,
-                //     following:true,
-                // }
+                where: { email, username }
             })
 
 
@@ -57,7 +47,7 @@ export class UserController {
             return res.status(200).send({
                 ok: true,
                 message: 'Login ok',
-                data: {userLog:user,tweetsLoaded:tweets}
+                data: {...User, token}
             })
 
 
