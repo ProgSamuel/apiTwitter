@@ -47,7 +47,7 @@ export class UserController {
             return res.status(200).send({
                 ok: true,
                 message: 'Login ok',
-                data: {...User, token}
+                data: {...user, token}
             })
 
 
