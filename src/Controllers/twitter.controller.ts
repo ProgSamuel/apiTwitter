@@ -41,6 +41,8 @@ export class TwitterController {
                     likes: {
                         select: {
                             idUser: true,
+                            user:true,
+                            idLike:true,
                         }
                     },
                     replies: {
@@ -50,10 +52,17 @@ export class TwitterController {
                             likes: {
                                 select: {
                                     idUser: true,
+                                    user:true,
+                                    idLike:true
                                 }
                             }
                         }
-                    }
+                    },
+                    idUser:true,
+                    user:true,
+                    idTwitter:true,
+                    
+
                 },
             })
 
