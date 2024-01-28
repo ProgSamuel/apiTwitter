@@ -24,17 +24,19 @@ export class UserController {
             if (!checkEmail && !checkUsername) return notFound(res, "Email o username")
 
             const user = await repository.user.findFirst({
-                where: { email, username }, select:{
-                    twitters:true,
-                    password:true,
-                    idUser:true,
-                    username:true,
-                    token:true,
-                    name:true,
-                    photo:true,
-                    following:true,
-                }
+                where: { email, username },
+                //  select:{
+                //     twitters:true,
+                //     password:true,
+                //     idUser:true,
+                //     username:true,
+                //     token:true,
+                //     name:true,
+                //     photo:true,
+                //     following:true,
+                // }
             })
+
 
             user?.password !== password && invalidData(res)
             const token: string = randomUUID();
@@ -44,12 +46,18 @@ export class UserController {
                 data: { token },
             })
 
+            const tweets = await repository.twitter.findMany({
+                where: {
+                    idUser: user?.idUser
+                }
+            })
+
             // output
 
             return res.status(200).send({
                 ok: true,
                 message: 'Login ok',
-                data: { user }
+                data: {userLog:{user},tweetsLoaded:{tweets}}
             })
 
 
@@ -100,12 +108,12 @@ export class UserController {
             // input
             const { idUser } = req.params
             const { name, email, username, password } = req.body
-    
+
             if (!name && !email && !username && !password) return res.status(400).send({
                 ok: false,
                 message: "Enter at least one field to update! Name, email, username or password."
             })
-    
+
             // processing
             if (email) {
                 const checkEmail = await repository.user.findFirst({
@@ -113,14 +121,14 @@ export class UserController {
                 })
                 checkEmail && existing(res, "Email")
             }
-    
+
             if (username) {
                 const checkUsername = await repository.user.findFirst({
                     where: { username },
                 })
                 checkUsername && existing(res, "Username")
             }
-    
+
             const result = await repository.user.update({
                 where: {
                     idUser
@@ -131,15 +139,15 @@ export class UserController {
                     username,
                     password,
                     dthrUpdated: new Date
-                }, 
+                },
                 select: {
-                    name:true,
-                    email:true,
-                    username:true,
-                    dthrUpdated:true,
+                    name: true,
+                    email: true,
+                    username: true,
+                    dthrUpdated: true,
                 }
             })
-    
+
             // output
             return res.status(200).send({
                 ok: true,
@@ -156,10 +164,10 @@ export class UserController {
     }
 
     // Delete User
-    public async deleteUser(req:Request, res:Response){
+    public async deleteUser(req: Request, res: Response) {
         try {
             //input
-            const {idUser} = req.params
+            const { idUser } = req.params
             const user = await repository.user.findFirst({
                 where: { idUser }
             })
@@ -168,7 +176,7 @@ export class UserController {
             // processing
             const name = user?.name
             const result = await repository.user.delete({
-                where:{
+                where: {
                     idUser
                 }
             })
@@ -177,7 +185,7 @@ export class UserController {
 
             res.status(200).send({
                 ok: true,
-                message:`${name} was excluded.`
+                message: `${name} was excluded.`
             })
 
 
