@@ -94,6 +94,15 @@ export class TwitterController {
             const twitters = await repository.twitter.findMany({
                 where:{
                     idUser
+                },
+                select:{
+                    content:true,
+                    idTwitter:true,
+                    dthrUpdated:true,
+                    idUser:true,
+                    likes:true,
+                    user:true,
+                    replies:true,
                 }
             })
 
@@ -102,7 +111,7 @@ export class TwitterController {
             res.status(200).send({
                 ok:true,
                 message:`${user?.username} has ${twitters.length} tweets`,
-                twitters
+                data: twitters
             })
 
         } catch (error: any) {
