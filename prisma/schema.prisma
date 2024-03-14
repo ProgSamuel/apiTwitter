@@ -19,7 +19,7 @@ model User {
   twitters  Twitter[]   @relation("user_to_twitter")
   following Followers[] @relation("follower_to_user")
   followers Followers[] @relation("following")
-  token     String?     @db.VarChar(50)
+  token     String?     @db.VarChar(4096)
   photo     String?     @db.VarChar(100)
 
   dthrCreated DateTime @default(now()) @map("dt_hr_created")

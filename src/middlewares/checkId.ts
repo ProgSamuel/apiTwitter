@@ -1,14 +1,17 @@
 import { Request, Response } from "express";
-import { User } from "../Models/user.model";
+import { LoginController } from "../Controllers/login.controler";
 import repository from "../database/prisma.repository";
 import { notFound, serverError } from "../Utils/response.helper";
 
 export const checkId = async (req: Request, res: Response, next: () => void) => {
     try {
+        const loginController = new LoginController();
         const { idUser } = req.params;
         const { authorization } = req.headers;
 
-        // checked authorization
+        console.log('Authorization:', authorization);
+        console.log('idUser:', idUser);
+
         if (!authorization) {
             return res.status(401).send({
                 ok: false,
@@ -16,25 +19,33 @@ export const checkId = async (req: Request, res: Response, next: () => void) => 
             });
         }
 
-        // search user 
         const user = await repository.user.findUnique({
             where: { idUser },
         });
 
-        // checked id
         if (!user) {
             return notFound(res, "User");
         }
 
-        if (authorization !== user.token) {
-            return res.status(401).send({
-                ok: false,
-                message: "Unauthorized access",
-            });
+        const login = await loginController.validateLogin( authorization, user.idUser);
+
+        if (login) {
+             return next()
+        } else {
+            res.status(400).send("Erro")
         }
 
-        next();
     } catch (error) {
         return serverError(res, error);
     }
 };
+
+
+
+
+// if (authorization !== user.token) {
+//     return res.status(403).send({
+//         ok: false,
+//         message: "Unauthorized access",
+//     });
+// }

@@ -3,6 +3,7 @@ import { fieldsNotProvided, notFound, serverError, successfully } from "../Utils
 import repository from "../database/prisma.repository";
 import { Twitter } from "../Models/twitter.model";
 
+
 export class TwitterController {
     // CREATE TWEET
     public async createTweet(req: Request, res: Response) {

@@ -1,61 +1,8 @@
 import { Request, Response } from "express";
 import repository from "../database/prisma.repository";
 import { User } from "../Models/user.model";
-import { existing, fieldsNotProvided, invalidData, notFound, serverError, successfully } from "../Utils/response.helper";
-import { randomUUID } from "crypto";
-
+import { existing, fieldsNotProvided, notFound, serverError, successfully } from "../Utils/response.helper";
 export class UserController {
-    // login
-    public async login(req: Request, res: Response) {
-        try {
-            // input 
-            // need idUser - email || username - password
-            const { email, username, password } = req.body
-            if (!email && !username || !password) return fieldsNotProvided(res);
-
-            // processing
-            const checkEmail = await repository.user.findFirstOrThrow({
-                where: { email },
-            })
-            const checkUsername = await repository.user.findFirstOrThrow({
-                where: { username },
-            })
-
-            if (!checkEmail && !checkUsername) return notFound(res, "Email o username")
-
-            const user = await repository.user.findFirst({
-                where: { email, username }
-            })
-
-
-            user?.password !== password && invalidData(res)
-            const token: string = randomUUID();
-
-            await repository.user.update({
-                where: { idUser: user?.idUser },
-                data: { token },
-            })
-
-            const tweets = await repository.twitter.findMany({
-                where: {
-                    idUser: user?.idUser
-                }
-            })
-
-            // output
-
-            return res.status(200).send({
-                ok: true,
-                message: 'Login ok',
-                data: {...user, token}
-            })
-
-
-        } catch (error: any) {
-            return serverError(res, error)
-
-        }
-    }
 
     // Create User
     public async createUser(req: Request, res: Response) {

@@ -7,6 +7,7 @@ import { ReplyController } from "./Controllers/reply.controller";
 import { LikeController } from "./Controllers/like.controller";
 import { FollowController } from "./Controllers/follow.controller";
 import { StartController } from "./Controllers/start.controller";
+import { LoginController } from "./Controllers/login.controler";
 
 const app = express();
 app.use(express.json());
@@ -18,13 +19,14 @@ const replyController = new ReplyController()
 const likeController = new LikeController()
 const followController = new FollowController()
 const startController = new StartController()
+const loginController = new LoginController()
 
 // START
 app.get('/', startController.start )
 
 // USER
 app.post('/', userController.createUser) //  CREATE USER
-app.post('/user/login', userController.login) // LOGIN
+app.post('/user/login', loginController.login) // LOGIN
 // app.get('/user/:idUser', userController.searcheUser) // SEARCH - TESTE 
 app.put('/user/:idUser', checkId, userController.updateUser) // UPDATE
 app.delete('/user/:idUser', checkId, userController.deleteUser) // DELETE
