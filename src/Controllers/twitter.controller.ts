@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { fieldsNotProvided, notFound, serverError, successfully } from "../Utils/response.helper";
 import repository from "../database/prisma.repository";
 import { Twitter } from "../Models/twitter.model";
+import { TwitterService } from "../services/twitter.service";
 
 
 export class TwitterController {
@@ -9,22 +10,14 @@ export class TwitterController {
     public async createTweet(req: Request, res: Response) {
         try {
             // input
-            const { idUser } = req.params 
+            const { idUser } = req.params
             const { content } = req.body
 
             !content && fieldsNotProvided(res)
-            
-
             // processing 
-            const type = "normal"
-            const twitter = new Twitter(content, idUser, type)
-            const twitterInput = twitter.toTwitterCreateInput()
-            const result = await repository.twitter.create({
-                data: twitterInput
-            })
-
-
-            return successfully(res, "Tweet", result)
+            const twitterService = new TwitterService()
+            const result = await twitterService.createTweet(content, idUser)
+            res.status(result.code).send(result)
 
         } catch (error: any) {
             return serverError(res, error)
@@ -34,47 +27,10 @@ export class TwitterController {
     //VIEW ALL TWEETS
     public async viewTweets(req: Request, res: Response) {
         try {
-
-            const tweets = await repository.twitter.findMany({
-                select: {
-                    content: true,
-                    dthrUpdated: true,
-                    likes: {
-                        select: {
-                            idUser: true,
-                            user:true,
-                            idLike:true,
-                        }
-                    },
-                    replies: {
-                        select: {
-                            replyContent: true,
-                            dthrUpdated: true,
-                            likes: {
-                                select: {
-                                    idUser: true,
-                                    user:true,
-                                    idLike:true
-                                }
-                            }
-                        }
-                    },
-                    idUser:true,
-                    user:true,
-                    idTwitter:true,
-                    
-
-                },
-            })
-
+            const twitterService = new TwitterService()
+            const result = await twitterService.viewTweets()
             // output 
-            return res.status(200).send({
-                ok: true,
-                message: "Your home",
-                data: tweets
-
-            })
-
+            return res.status(result.code).send(result)
         } catch (error: any) {
             return serverError(res, error)
         }
@@ -92,28 +48,10 @@ export class TwitterController {
             })
             !user && notFound(res, "User")
 
-            const twitters = await repository.twitter.findMany({
-                where:{
-                    idUser
-                },
-                select:{
-                    content:true,
-                    idTwitter:true,
-                    dthrUpdated:true,
-                    idUser:true,
-                    likes:true,
-                    user:true,
-                    replies:true,
-                }
-            })
-
+            const twitterService = new TwitterService()
+            const result = await twitterService.tweetsUser(idUser)
             //output
-
-            res.status(200).send({
-                ok:true,
-                message:`${user?.username} has ${twitters.length} tweets`,
-                data: twitters
-            })
+            res.status(result.code).send(result)
 
         } catch (error: any) {
             return serverError(res, error)
@@ -135,7 +73,6 @@ export class TwitterController {
             })
             !tweet && notFound(res, "Tweet")
 
-            //processing
             const idUserTwitter = tweet?.idUser
 
             if (idUser !== idUserTwitter) {
@@ -144,31 +81,12 @@ export class TwitterController {
                     message: "Data conflict: Tweet does not match the User id entered."
                 })
             }
-
-
-            const result = await repository.twitter.update({
-                where: {
-                    idTwitter
-                },
-                data: {
-                    content,
-                    dthrUpdated: new Date
-                },
-                select: {
-                    content: true,
-                    dthrUpdated: true
-                }
-            })
+            //processing
+            const twitterService = new TwitterService()
+            const result = await twitterService.updateTweet(idTwitter, content)
 
             // output
-
-            res.status(200).send({
-                ok: true,
-                message: "Updated tweet",
-                data: {
-                    result
-                }
-            })
+            res.status(result.code).send(result)
 
         } catch (error: any) {
             return serverError(res, error)
@@ -198,19 +116,10 @@ export class TwitterController {
                     message: "Data conflict: Tweet does not match the User id entered."
                 })
             }
-
-            const result = await repository.twitter.delete({
-                where: {
-                    idTwitter
-                }
-            })
-
-            return res.status(200).send({
-                ok: true,
-                message: "Tweet deleted"
-            })
-
+            const twitterService = new TwitterService()
+            const result = await twitterService.deleteTweet(idTwitter)
             // output
+            res.status(result.code).send(result)
 
         } catch (error: any) {
             return serverError(res, error)

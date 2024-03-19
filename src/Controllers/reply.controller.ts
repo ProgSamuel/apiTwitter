@@ -2,6 +2,8 @@ import { Request, Response } from "express"
 import { fieldsNotProvided, notFound, serverError, successfully } from "../Utils/response.helper"
 import repository from "../database/prisma.repository"
 import { Reply } from "../Models/reply.model"
+import { ReplyService } from "../services/reply.service"
+import { LoginService } from "../services/login.service"
 
 export class ReplyController {
       // CREATE REPLY
@@ -19,26 +21,10 @@ export class ReplyController {
             })
             !twitter && notFound(res, "Tweet")
 
-            // processing 
-
-            const type = "reply"
-            new Reply(idUser, idTwitter, content, type)
-            const result = await repository.reply.create({
-                data: {
-                    userId: idUser,
-                    twitterOrigin: idTwitter,
-                    replyContent: content
-                },
-                select:{
-                    replyContent: true,
-                    dthrUpdated: true, 
-                    likes:true
-                }
-            })
-
-
-            return successfully(res, "Reply", result)
-
+            // processing
+            const replyService = new ReplyService()
+            const result = await replyService.replyTwitter(idUser, idTwitter, content)
+            res.status(result.code).send(result)
         } catch (error: any) {
             return serverError(res, error)
         }
@@ -60,7 +46,6 @@ export class ReplyController {
             })
             !twitter && notFound(res, "Tweet")
 
-            //processing
             const idUserTwitter = twitter?.userId
 
             if (idUser !== idUserTwitter) {
@@ -69,30 +54,14 @@ export class ReplyController {
                     message: "Data conflict: Tweet does not match the User id entered."
                 })
             }
+            //processing
+            const replyService = new ReplyService()
 
-            const result = await repository.reply.update({
-                where: {
-                    idTwitter
-                },
-                data: {
-                    replyContent:content,
-                    dthrUpdated: new Date
-                },
-                select: {
-                    replyContent: true,
-                    dthrUpdated: true
-                }
-            })
+            const result = await replyService.replyTwitter(idUser, idTwitter, content)
 
             // output
 
-            res.status(200).send({
-                ok: true,
-                message: "Updated twitter",
-                data: {
-                    result
-                }
-            })
+            res.status(result.code).send(result)
 
         } catch (error: any) {
             return serverError(res, error)
@@ -123,17 +92,9 @@ export class ReplyController {
                 })
             }
 
-            await repository.reply.delete({
-                where: {
-                    idTwitter
-                }
-            })
-
-            return res.status(200).send({
-                ok: true,
-                message: "Twitter deleted"
-            })
-
+            const replyService = new ReplyService()
+            const result = await replyService.deleteReply(idTwitter)
+            return res.status(result.code).send(result)
             // output
 
         } catch (error: any) {

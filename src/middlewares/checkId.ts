@@ -9,9 +9,6 @@ export const checkId = async (req: Request, res: Response, next: () => void) => 
         const { idUser } = req.params;
         const { authorization } = req.headers;
 
-        console.log('Authorization:', authorization);
-        console.log('idUser:', idUser);
-
         if (!authorization) {
             return res.status(401).send({
                 ok: false,
@@ -39,13 +36,3 @@ export const checkId = async (req: Request, res: Response, next: () => void) => 
         return serverError(res, error);
     }
 };
-
-
-
-
-// if (authorization !== user.token) {
-//     return res.status(403).send({
-//         ok: false,
-//         message: "Unauthorized access",
-//     });
-// }
