@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { notFound, serverError } from "../Utils/response.helper";
 import repository from "../database/prisma.repository";
-import { randomUUID } from "crypto";
+import { FollowService } from "../services/follow.service";
 
 export class FollowController {
     // FOLLOW and UNFOLLOW
@@ -17,10 +17,10 @@ export class FollowController {
             const follow = await repository.user.findFirst({
                 where: {
                     idUser: idFollow
-                }
+                }, select: { username: true, idUser: true, following: true }
             })
 
-            !follow || !user && notFound(res, 'User')
+            !follow || !user  && notFound(res, 'User')
 
             idUser === idFollow && res.status(400).send({
                 ok: false,
@@ -34,29 +34,29 @@ export class FollowController {
                 }
             })
 
-            if (existing) {
-                await repository.followers.delete({ where: { id: existing.id, idUser, idFollowing: idFollow } })
-                return res.status(201).send({
-                    ok: true,
-                    message: `${user?.username} unfollowed ${follow?.username}`
-                })
-            }
+            const followService = new FollowService()
 
             // processing
-            const result = await repository.followers.create({
-                data: {
-                    id: randomUUID(),
-                    idUser,
-                    idFollowing: idFollow
-                }
-            })
-            return res.status(201).send({
-                ok: true,
-                message: `${user?.username} started follwing ${follow?.username}`
+            if (existing) {
+                const result = await followService.unfollow({
+                        idFollow,
+                        idUser,
+                        user,
+                        userFollow: follow,
+                        existingId: existing.id
+                })
+                return res.status(result.code).send({result})
+            }
+
+            const result =  await followService.follow({
+                idUser, 
+                idFollow, 
+                user, 
+                userFollow: follow
             })
 
             // output
-
+            return res.status(result.code).send({result})
         } catch (error: any) {
             return serverError(res, error);
         }
