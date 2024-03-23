@@ -23,7 +23,7 @@ export class ReplyController {
 
             // processing
             const replyService = new ReplyService()
-            const result = await replyService.replyTwitter(idUser, idTwitter, content)
+            const result = await replyService.replyTwitter({idUser, idTwitter, content})
             res.status(result.code).send(result)
         } catch (error: any) {
             return serverError(res, error)
@@ -57,7 +57,7 @@ export class ReplyController {
             //processing
             const replyService = new ReplyService()
 
-            const result = await replyService.replyTwitter(idUser, idTwitter, content)
+            const result = await replyService.updaterReply(idTwitter, content)
 
             // output
 

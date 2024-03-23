@@ -1,14 +1,15 @@
+import { ReplyDTO } from "../contracts/reply.contract"
 import { Result } from "../contracts/result.contract"
 import repository from "../database/prisma.repository"
 
 export class ReplyService {
-    public async replyTwitter(idUser:string, idTwitter:string, content:string):Promise<Result>{
+    public async replyTwitter(data:ReplyDTO):Promise<Result>{
         try {
             const result = await repository.reply.create({
                 data: {
-                    userId: idUser,
-                    twitterOrigin: idTwitter,
-                    replyContent: content
+                    userId: data.idUser,
+                    twitterOrigin: data.idTwitter,
+                    replyContent: data.content
                 },
                 select:{
                     replyContent: true,

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import repository from "../database/prisma.repository";
-import { User } from "../Models/user.model";
-import { existing, fieldsNotProvided, notFound, serverError, successfully } from "../Utils/response.helper";
+import { existing, fieldsNotProvided, notFound, serverError } from "../Utils/response.helper";
+import { UserService } from "../services/user.service";
 export class UserController {
 
     // Create User
@@ -11,7 +11,6 @@ export class UserController {
             const { name, email, username, password } = req.body
             !name || !email || !username || !password && fieldsNotProvided(res)
 
-            //Processing
             const checkEmail = await repository.user.findFirst({
                 where: { email },
             })
@@ -21,18 +20,14 @@ export class UserController {
                 where: { username },
             })
             checkUsername && existing(res, "Username")
+            //Processing
 
-            const user = new User(name, email, username, password)
-            const userInput = user.toUserCreateInput();
-
-
-            const result = await repository.user.create({
-                data: userInput
+            const userService = new UserService()
+            const result = await userService.createUser({
+                name, email, username, password
             })
-
             // output
-
-            return successfully(res, "User", result)
+            return res.status(result.code).send(result)
         } catch (error: any) {
             return serverError(res, error)
 
@@ -66,33 +61,11 @@ export class UserController {
                 checkUsername && existing(res, "Username")
             }
 
-            const result = await repository.user.update({
-                where: {
-                    idUser
-                },
-                data: {
-                    name,
-                    email,
-                    username,
-                    password,
-                    dthrUpdated: new Date
-                },
-                select: {
-                    name: true,
-                    email: true,
-                    username: true,
-                    dthrUpdated: true,
-                }
-            })
+            const userService = new UserService()
 
+            const result = await userService.updateUser({idUser, name, email, username, password})
             // output
-            return res.status(200).send({
-                ok: true,
-                message: "update done successfully!",
-                data: {
-                    result
-                }
-            })
+            return res.status(result.code).send(result)
         } catch (error: any) {
             return serverError(res, error)
 
@@ -111,19 +84,13 @@ export class UserController {
 
             !user && notFound(res, 'User')
             // processing
-            const name = user?.name
-            const result = await repository.user.delete({
-                where: {
-                    idUser
-                }
-            })
+            const userService = new UserService()
 
+            const name = user?.name
+            const result = await userService.deleteUser(idUser, name!)
             // output
 
-            res.status(200).send({
-                ok: true,
-                message: `${name} was excluded.`
-            })
+            res.status(result.code).send(result)
 
 
         } catch (error: any) {
@@ -138,19 +105,12 @@ export class UserController {
             const { idUser } = req.params
 
             //processing
-            const user = await repository.user.findFirst({
-                where: { idUser }
-            })
+            const userService = new UserService()
 
-            !user && notFound(res, 'User')
-
+            const result = await userService.searcheUser(idUser)
+            
             // output
-
-            return res.status(200).send({
-                ok: true,
-                message: 'User successfully obtained',
-                data: user
-            })
+            return res.status(result.code).send(result)
 
         } catch (error: any) {
             return serverError(res, error)
