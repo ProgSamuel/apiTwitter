@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import cors from 'cors';
 import { UserController } from "./Controllers/user.controller";
 import { TwitterController } from "./Controllers/twitter.controller";

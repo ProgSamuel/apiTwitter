@@ -1,6 +1,5 @@
 import { Request, Response} from "express";
-import { fieldsNotProvided, notFound, serverError } from "../Utils/response.helper";
-import repository from "../database/prisma.repository";
+import { fieldsNotProvided, serverError } from "../Utils/response.helper";
 import { validateToken } from "../Utils/login.helper";
 import { PayloadToken } from "../contracts/login.contract";
 import { LoginService } from "../services/login.service";
@@ -10,22 +9,21 @@ export class LoginController {
         try {
             // input - need idUser - email || username - password
             const { email, username, password } = req.body
-            if (!email && !username || !password) return fieldsNotProvided(res);
-            const checkEmail = await repository.user.findFirstOrThrow({
-                where: { email },
-            })
-            const checkUsername = await repository.user.findFirstOrThrow({
-                where: { username },
-            })
 
-            if (!checkEmail && !checkUsername) return notFound(res, "Email o username")
+            if (!email && !username || !password) return fieldsNotProvided(res)
 
             // processing
             const loginService = new LoginService()
-            const result = await loginService.login(email, username, password)
 
-            // output
-            return res.status(result.code).send(result)
+            if(email){
+                const result = await loginService.loginEmail(email, password)
+                // output
+                return res.status(result.code).send(result)
+            } else {
+                const result = await loginService.loginUsername(username, password)
+                // output
+                return res.status(result.code).send(result)
+            }
         } catch (error: any) {
             return serverError(res, error)
         }
