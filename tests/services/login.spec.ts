@@ -1,5 +1,7 @@
 import { LoginService } from '../../src/services/login.service'
 import { prismaMock } from '../config/prisma.mock'
+import * as dotenv from "dotenv";
+dotenv.config();
 
 describe('email login tests', () => {
   test('should return 400 if email or password are not provided', async () => {
@@ -68,38 +70,50 @@ describe('email login tests', () => {
     expect(result.data).toBeUndefined()
   })
 
-  // test('should return 200 if login completed successfully', async () => {
-  //   //sut
-  //   const loginService = new LoginService()
-  //   // simulated behavior 
-  //   prismaMock.user.findFirst.mockResolvedValue({
-  //     idUser: "63c46857-0df2-4440-879b-0003a6bd5d5e",
-  //     name: "Teste",
-  //     email:"teste@teste.com",
-  //     username:"teste",
-  //     password:"teste9090",
-  //     token: "eyJoiuiohoijoljoi",
-  //     photo: "teste",
-  //     dthrCreated: new Date(),
-  //     dthrUpdated: new Date(),
-  //   })
-  //   // methodos
-  //   const result = await loginService.loginEmail(
-  //     "teste@teste.com", "teste9090"
-  //   )
-  //   // asserts
-  //   expect(result).toBeDefined()
-  //   // expect(result.ok).toEqual(true)
-  //   // expect(result).toHaveProperty("code", 200)
-  //   expect(result).toHaveProperty("message", "Login ok")
+  test('should return 200 if login completed successfully', async () => {
+    //sut
+    const loginService = new LoginService()
+    // simulated behavior 
+    prismaMock.user.findFirst.mockResolvedValue({
+      idUser: "63c46857-0df2-4440-879b-0003a6bd5d5e",
+      name: "Teste",
+      email:"teste@teste.com.br",
+      username:"teste",
+      password:"teste9090",
+      token: null,
+      photo: null,
+      dthrCreated: new Date(),
+      dthrUpdated: new Date(),
+    })
 
-  //   expect(result.data).toBeDefined()
-  //   expect(result.data).toHaveProperty("idUser")
-  //   expect(result.data).toHaveProperty("email")
-  //   expect(result.data).toHaveProperty("token")
+    prismaMock.user.update.mockResolvedValue({
+      idUser: "63c46857-0df2-4440-879b-0003a6bd5d5e",
+      name: "Teste",
+      email:"teste@teste.com.br",
+      username:"teste",
+      password:"teste9090",
+      token: "eyJqualquer_token",
+      photo: null,
+      dthrCreated: new Date(),
+      dthrUpdated: new Date(),
+    })
+    // methodos
+    const result = await loginService.loginEmail(
+      "teste@teste.com.br", "teste9090"
+    )
+    // asserts
+    expect(result).toBeDefined()
+    expect(result.ok).toEqual(true)
+    expect(result).toHaveProperty("code", 200)
+    expect(result).toHaveProperty("message", "Login ok")
+
+    expect(result.data).toBeDefined()
+    expect(result.data).toHaveProperty("idUser")
+    expect(result.data).toHaveProperty("email")
+    expect(result.data).toHaveProperty("token")
     
-  //   expect(result.data.token).toContain("eyJ")
-  // })
+    expect(result.data.token).toContain("eyJ")
+  })
 })
 
 describe('username login tests', () => {
@@ -163,38 +177,50 @@ describe('username login tests', () => {
     expect(result.data).toBeUndefined()
   })
 
-  // test('should return 200 if login completed successfully', async () => {
-  //   //sut
-  //   const loginService = new LoginService()
-  //   // simulated behavior 
-  //   prismaMock.user.findFirst.mockResolvedValue({
-  //     idUser: "63c46857-0df2-4440-879b-0003a6bd5d5e",
-  //     email:"teste@teste.com",
-  //     dthrCreated: new Date(),
-  //     dthrUpdated: new Date(),
-  //     name: "Teste",
-  //     username:"teste",
-  //     password:"teste9090",
-  //     photo: null,
-  //     token: "eyJ",
-  //   })
+  test('should return 200 if login completed successfully', async () => {
+    //sut
+    const loginService = new LoginService()
+    // simulated behavior 
+    prismaMock.user.findFirst.mockResolvedValue({
+      idUser: "63c46857-0df2-4440-879b-0003a6bd5d5e",
+      name: "Teste",
+      email:"teste@teste.com.br",
+      username:"teste",
+      password:"teste9090",
+      token: null,
+      photo: null,
+      dthrCreated: new Date(),
+      dthrUpdated: new Date(),
+    })
 
-  //   // methodos
-  //   const result = await loginService.loginUsername(
-  //     "teste", "teste9090"
-  //   )
-  //   // asserts
-  //   expect(result).toBeDefined()
-  //   // expect(result.ok).toEqual(true)
-  //   // expect(result).toHaveProperty("code", 200)
-  //   expect(result).toHaveProperty("message", 'Login ok')
+    prismaMock.user.update.mockResolvedValue({
+      idUser: "63c46857-0df2-4440-879b-0003a6bd5d5e",
+      name: "Teste",
+      email:"teste@teste.com.br",
+      username:"teste",
+      password:"teste9090",
+      token: "eyJqualquer_token",
+      photo: null,
+      dthrCreated: new Date(),
+      dthrUpdated: new Date(),
+    })
 
-  //   expect(result.data).toBeDefined()
-  //   expect(result.data).toHaveProperty("idUser")
-  //   expect(result.data).toHaveProperty("username")
-  //   expect(result.data).toHaveProperty("token")
+    // methodos
+    const result = await loginService.loginUsername(
+      "teste", "teste9090"
+    )
+    // asserts
+    expect(result).toBeDefined()
+    // expect(result.ok).toEqual(true)
+    // expect(result).toHaveProperty("code", 200)
+    expect(result).toHaveProperty("message", 'Login ok')
+
+    expect(result.data).toBeDefined()
+    expect(result.data).toHaveProperty("idUser")
+    expect(result.data).toHaveProperty("username")
+    expect(result.data).toHaveProperty("token")
     
-  //   expect(result.data.token).toContain("eyJ")
-  // })
+    expect(result.data.token).toContain("eyJ")
+  })
 })
 
