@@ -1,13 +1,14 @@
+import { LikeDTO, UnLikeDTO, UnLikeReplyDTO } from "../contracts/like.contract";
 import { Result } from "../contracts/result.contract";
 import repository from "../database/prisma.repository";
 
 export class LikeService {
-    public async likeTweet (idUser:string, twitterId:string, username:string) :Promise<Result>{
+    public async likeTweet (data:LikeDTO) :Promise<Result>{
         try {
             const result = await repository.like.create({
                 data: {
-                    idUser,
-                    twitterId,
+                    idUser:data.idUser,
+                    twitterId:data.twitterId,
                 },
                 select: {
                     idUser: true,
@@ -18,7 +19,7 @@ export class LikeService {
             return {
                 ok:true,
                 code:200,
-                message: `${username} liked the tweet!`,
+                message: `${data.username} liked the tweet!`,
                 data: result
             }
         } catch (error:any) {
@@ -30,13 +31,13 @@ export class LikeService {
             }
         }
     }
-    public async unLikeTweet(idUser:string, twitterId:string, idLike:string):Promise <Result>{
+    public async unLikeTweet(data:UnLikeDTO):Promise <Result>{
         try {
             await repository.like.delete({
                 where: {
-                    idUser,
-                    twitterId,
-                    idLike,
+                    idUser:data.idUser,
+                    twitterId:data.twitterId,
+                    idLike:data.idLike!,
                 }
             })
             return {
@@ -82,13 +83,13 @@ export class LikeService {
             }
         }
     }
-    public async unLikeReplyTweet(idUser:string, twitterId:string, idLike:string):Promise<Result>{
+    public async unLikeReplyTweet(data:UnLikeReplyDTO):Promise<Result>{
         try {
             await repository.like.delete({
                 where: {
-                    idUser,
-                    replyId: twitterId,
-                    idLike,
+                    idUser:data.idUser,
+                    replyId: data.twitterId,
+                    idLike:data.idLike,
                 }
             })
             return {

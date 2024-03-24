@@ -39,11 +39,11 @@ export class LikeController {
             const likeService = new LikeService()
 
             if (existingLike) {
-              const result = await likeService.unLikeTweet(idUser, twitterId, existingLike.idLike)
+              const result = await likeService.unLikeTweet({idUser, twitterId, idLike: existingLike.idLike})
                 return res.status(result.code).send(result)
             }
 
-            const result =  await likeService.likeTweet(idUser, twitterId, user?.username!)            
+            const result =  await likeService.likeTweet({idUser, twitterId, username:user?.username!})            
             // output
             res.status(result.code).send(result)
 
@@ -71,7 +71,7 @@ export class LikeController {
             
             const likeService = new LikeService()
             if (existingLike) {
-                const result = await likeService.unLikeReplyTweet(idUser, twitterId, existingLike.idLike)
+                const result = await likeService.unLikeReplyTweet({idUser, twitterId,idLike: existingLike.idLike})
                 return res.status(result.code).send(result)
             }
             const result = await likeService.likeReplyTweet(idUser, twitterId)

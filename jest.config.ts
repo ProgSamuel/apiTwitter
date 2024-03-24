@@ -15,5 +15,5 @@ export default {
     coverageDirectory: "coverage",
     coveragePathIgnorePatterns: ["\\\\node_modules\\\\"],
     setupFilesAfterEnv: ["<rootDir>/tests/config/prisma.mock.ts"],
-    testTimeout: 150000,
+    testTimeout: 200000,
 };

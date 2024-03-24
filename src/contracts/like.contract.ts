@@ -9,3 +9,9 @@ export interface UnLikeDTO{
     twitterId:string, 
     idLike:string |null
 }
+
+export interface UnLikeReplyDTO{
+    idUser:string, 
+    twitterId:string, 
+    idLike:string
+}

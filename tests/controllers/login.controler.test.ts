@@ -15,5 +15,4 @@ describe('Integrated tests for login via API', () => {
         expect(result.statusCode).toEqual(400)
         expect(result.body).toHaveProperty("message",'Fill in all mandatory fields' )
     })
-
 })
