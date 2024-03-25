@@ -1,5 +1,6 @@
 import { Twitter } from "../Models/twitter.model"
 import { Result } from "../contracts/result.contract"
+import { UpdateTweetDTO } from "../contracts/tweet.contract"
 import repository from "../database/prisma.repository"
 
 export class TwitterService {
@@ -73,6 +74,16 @@ export class TwitterService {
     }
     public async tweetsUser(idUser: string): Promise<Result> {
         try {
+            const user = await repository.user.findUnique({
+                where: {
+                    idUser
+                }
+            })
+            if (!user) return {
+                ok: false,
+                code:404,
+                message: "User does not exist"
+            }
             const tweets = await repository.twitter.findMany({
                 where: {
                     idUser
@@ -101,14 +112,37 @@ export class TwitterService {
             }
         }
     }
-    public async updateTweet(idTwitter:string, content:string): Promise<Result> {
+    public async updateTweet(data:UpdateTweetDTO): Promise<Result> {
         try {
+            const tweet = await repository.twitter.findUnique({
+                where: {
+                    idTwitter: data.idTwitter
+                }
+            })
+            if (!tweet) {
+                return {
+                    ok: false,
+                    code: 404,
+                    message: "Tweet does not exist",
+                }
+            }
+
+            const idUserTwitter = tweet?.idUser
+
+            if (data.idUser !== idUserTwitter) {
+                return {
+                    ok: false,
+                    code: 409,
+                    message: "Data conflict: Tweet does not match the User id entered."
+                }
+            }
+
             const result = await repository.twitter.update({
                 where: {
-                    idTwitter
+                    idTwitter:data.idTwitter
                 },
                 data: {
-                    content,
+                    content:data.content,
                     dthrUpdated: new Date
                 },
                 select: {
@@ -131,8 +165,29 @@ export class TwitterService {
             }
         }
     }
-    public async deleteTweet(idTwitter:string): Promise<Result> {
+    public async deleteTweet(idTwitter:string, idUser:string): Promise<Result> {
         try {
+            const tweet = await repository.twitter.findUnique({
+                where: {
+                    idTwitter
+                }
+            })
+            if (!tweet) {
+                return {
+                    ok: false,
+                    code: 404,
+                    message: "Tweet does not exist."
+                }
+            }
+
+            const idUserTwitter = tweet?.idUser
+            if (idUser !== idUserTwitter) {
+                return {
+                    ok: false,
+                    code:409,
+                    message: "Data conflict: Tweet does not match the User id entered."
+                }
+            }
             await repository.twitter.delete({
                 where: {
                     idTwitter

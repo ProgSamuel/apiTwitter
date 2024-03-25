@@ -4,7 +4,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 describe('email login tests', () => {
-  test('should return 400 if email or password are not provided', async () => {
+  test('should return 404 if email or password are not provided', async () => {
     // sut
     const loginService = new LoginService()
 
@@ -211,8 +211,8 @@ describe('username login tests', () => {
     )
     // asserts
     expect(result).toBeDefined()
-    // expect(result.ok).toEqual(true)
-    // expect(result).toHaveProperty("code", 200)
+    expect(result.ok).toEqual(true)
+    expect(result).toHaveProperty("code", 200)
     expect(result).toHaveProperty("message", 'Login ok')
 
     expect(result.data).toBeDefined()

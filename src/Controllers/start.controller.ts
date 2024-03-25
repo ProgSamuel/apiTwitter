@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { serverError } from "../Utils/response.helper";
 
 export class StartController {
-    public async start(req: Request, res: Response) {
+    public async start(res: Response) {
         try {
             return res.status(200).send({
                 ok: true,

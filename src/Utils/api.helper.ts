@@ -1,7 +1,7 @@
 import express from "express";
 import cors from 'cors';
 import { UserController } from "../Controllers/user.controller";
-import { TwitterController } from "../Controllers/twitter.controller";
+import { TwitterController } from "../Controllers/tweet.controller";
 import { ReplyController } from "../Controllers/reply.controller";
 import { LikeController } from "../Controllers/like.controller";
 import { FollowController } from "../Controllers/follow.controller";

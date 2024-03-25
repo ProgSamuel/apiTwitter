@@ -52,7 +52,7 @@ export class ReplyService {
             return {
                 ok: true,
                 code:200,
-                message: "Updated twitter",
+                message: "Updated tweet",
                 data:result
             }
 
@@ -75,7 +75,7 @@ export class ReplyService {
             return {
                 ok: true,
                 code: 200,
-                message: "Twitter deleted."
+                message: "Tweet deleted."
             }
         } catch (error:any) {
             return {

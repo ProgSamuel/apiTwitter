@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 
 export function serverError (res:Response, error:any){
     return res.status(500).send(
@@ -43,6 +43,6 @@ export function existing (res:Response, entity:string){
 export function invalidData (res:Response){
     res.status(400).send({
         ok:false,
-        message: 'invalid data'
+        message: 'Invalid data'
     })
 }

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { fieldsNotProvided, notFound, serverError } from "../Utils/response.helper";
 import repository from "../database/prisma.repository";
-import { TwitterService } from "../services/twitter.service";
+import { TwitterService } from "../services/tweet.service";
 
 
 export class TwitterController {
@@ -40,12 +40,6 @@ export class TwitterController {
         try {
             // input 
             const { idUser } = req.params
-            const user = await repository.user.findUnique({
-                where: {
-                    idUser
-                }
-            })
-            !user && notFound(res, "User")
 
             const twitterService = new TwitterService()
             const result = await twitterService.tweetsUser(idUser)
@@ -65,24 +59,9 @@ export class TwitterController {
             const { content } = req.body
 
             !content && fieldsNotProvided(res)
-            const tweet = await repository.twitter.findUnique({
-                where: {
-                    idTwitter
-                }
-            })
-            !tweet && notFound(res, "Tweet")
-
-            const idUserTwitter = tweet?.idUser
-
-            if (idUser !== idUserTwitter) {
-                return res.status(409).send({
-                    ok: false,
-                    message: "Data conflict: Tweet does not match the User id entered."
-                })
-            }
             //processing
             const twitterService = new TwitterService()
-            const result = await twitterService.updateTweet(idTwitter, content)
+            const result = await twitterService.updateTweet({idTwitter, content, idUser})
 
             // output
             res.status(result.code).send(result)
@@ -99,24 +78,8 @@ export class TwitterController {
             const { idUser, idTwitter } = req.params
 
             // processing
-
-            const tweet = await repository.twitter.findUnique({
-                where: {
-                    idTwitter
-                }
-            })
-            !tweet && notFound(res, "Tweet")
-
-            const idUserTwitter = tweet?.idUser
-
-            if (idUser !== idUserTwitter) {
-                return res.status(409).send({
-                    ok: false,
-                    message: "Data conflict: Tweet does not match the User id entered."
-                })
-            }
             const twitterService = new TwitterService()
-            const result = await twitterService.deleteTweet(idTwitter)
+            const result = await twitterService.deleteTweet(idTwitter, idUser)
             // output
             res.status(result.code).send(result)
 
