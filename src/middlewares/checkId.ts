@@ -15,23 +15,16 @@ export const checkId = async (req: Request, res: Response, next: () => void) => 
                 message: "Authentication token not provided",
             });
         }
-
         const user = await repository.user.findUnique({
             where: { idUser },
         });
 
-        if (!user) {
-            return notFound(res, "User");
-        }
+        if (!user) { return notFound(res, "User")}
 
         const login = await loginController.validateLogin( authorization, user.idUser);
-
-        if (login) {
-             return next()
-        } else {
-            res.status(400).send("Erro")
+        if (login) {return next()
+        } else {res.status(400).send("Erro")
         }
-
     } catch (error) {
         return serverError(res, error);
     }

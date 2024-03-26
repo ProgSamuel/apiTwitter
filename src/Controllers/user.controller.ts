@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import repository from "../database/prisma.repository";
-import { existing, fieldsNotProvided, notFound, serverError } from "../Utils/response.helper";
+import { fieldsNotProvided, serverError } from "../Utils/response.helper";
 import { UserService } from "../services/user.service";
 export class UserController {
 
@@ -11,17 +10,7 @@ export class UserController {
             const { name, email, username, password } = req.body
             !name || !email || !username || !password && fieldsNotProvided(res)
 
-            const checkEmail = await repository.user.findFirst({
-                where: { email },
-            })
-            checkEmail && existing(res, "Email")
-
-            const checkUsername = await repository.user.findFirst({
-                where: { username },
-            })
-            checkUsername && existing(res, "Username")
             //Processing
-
             const userService = new UserService()
             const result = await userService.createUser({
                 name, email, username, password
@@ -30,7 +19,6 @@ export class UserController {
             return res.status(result.code).send(result)
         } catch (error: any) {
             return serverError(res, error)
-
         }
     }
 
@@ -47,20 +35,6 @@ export class UserController {
             })
 
             // processing
-            if (email) {
-                const checkEmail = await repository.user.findFirst({
-                    where: { email },
-                })
-                checkEmail && existing(res, "Email")
-            }
-
-            if (username) {
-                const checkUsername = await repository.user.findFirst({
-                    where: { username },
-                })
-                checkUsername && existing(res, "Username")
-            }
-
             const userService = new UserService()
 
             const result = await userService.updateUser({idUser, name, email, username, password})
@@ -78,21 +52,13 @@ export class UserController {
         try {
             //input
             const { idUser } = req.params
-            const user = await repository.user.findFirst({
-                where: { idUser }
-            })
-
-            !user && notFound(res, 'User')
+            
             // processing
             const userService = new UserService()
+            const result = await userService.deleteUser(idUser)
 
-            const name = user?.name
-            const result = await userService.deleteUser(idUser, name!)
             // output
-
             res.status(result.code).send(result)
-
-
         } catch (error: any) {
             return serverError(res, error)
         }

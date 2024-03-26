@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { fieldsNotProvided, notFound, serverError } from "../Utils/response.helper";
-import repository from "../database/prisma.repository";
+import { fieldsNotProvided, serverError } from "../Utils/response.helper";
 import { TwitterService } from "../services/tweet.service";
 
 

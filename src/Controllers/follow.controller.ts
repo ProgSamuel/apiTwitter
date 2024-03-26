@@ -14,13 +14,13 @@ export class FollowController {
                 where: { idUser }, select: { username: true, idUser: true, following: true }
             })
 
-            const follow = await repository.user.findFirst({
+            const follow = await repository.user.findUnique({
                 where: {
                     idUser: idFollow
                 }, select: { username: true, idUser: true, following: true }
             })
 
-            !follow || !user  && notFound(res, 'User')
+            !follow || !user  && notFound(res, 'User or followed')
 
             idUser === idFollow && res.status(400).send({
                 ok: false,
@@ -34,9 +34,9 @@ export class FollowController {
                 }
             })
 
+            // processing
             const followService = new FollowService()
 
-            // processing
             if (existing) {
                 const result = await followService.unfollow({
                         idFollow,

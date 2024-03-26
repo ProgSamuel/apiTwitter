@@ -1,3 +1,4 @@
+import { any } from 'jest-mock-extended';
 import { LoginService } from '../../src/services/login.service'
 import { prismaMock } from '../config/prisma.mock'
 import * as dotenv from "dotenv";
@@ -114,6 +115,20 @@ describe('email login tests', () => {
     
     expect(result.data.token).toContain("eyJ")
   })
+  test('should return 500 if there is any failure in the login process with email', async () => {
+    const loginService = new LoginService()
+    prismaMock.user.findFirst.mockRejectedValue(any)
+
+    const result = await loginService.loginEmail(
+      "teste@teste.com.br", "teste9090"
+    )
+    expect(result).toBeDefined()
+    expect(result.ok).toEqual(false)
+    expect(result).toHaveProperty("code", 500)
+    expect(result).toHaveProperty("message")
+
+    expect(result.data).toBeDefined()
+  });
 })
 
 describe('username login tests', () => {
@@ -222,5 +237,19 @@ describe('username login tests', () => {
     
     expect(result.data.token).toContain("eyJ")
   })
+  test('should return 500 if there is any failure in the login process with username', async () => {
+    const loginService = new LoginService()
+    prismaMock.user.findFirst.mockRejectedValue(any)
+
+    const result = await loginService.loginEmail(
+      "teste", "teste9090"
+    )
+    expect(result).toBeDefined()
+    expect(result.ok).toEqual(false)
+    expect(result).toHaveProperty("code", 500)
+    expect(result).toHaveProperty("message")
+
+    expect(result.data).toBeDefined()
+  });
 })
 

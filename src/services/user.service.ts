@@ -6,9 +6,29 @@ import repository from "../database/prisma.repository"
 export class UserService {
     public async createUser(data:UserCreatedDTO): Promise<Result> {
         try {
+            const checkEmail = await repository.user.findFirst({
+                where: { email: data.email },
+            })
+            if (checkEmail) {
+                return {
+                    ok: false,
+                    code: 409,
+                    message: "Email already exists"
+                }
+            } 
+
+            const checkUsername = await repository.user.findUnique({
+                where: { username:data.username },
+            })
+            if (checkUsername) {
+                return {
+                    ok: false,
+                    code: 409,
+                    message: "Username already exists"
+                }
+            }             
             const user = new User(data.name, data.email, data.username, data.password)
             const userInput = user.toUserCreateInput();
-
 
             const result = await repository.user.create({
                 data: userInput
@@ -29,8 +49,19 @@ export class UserService {
         }
     }
 
-    public async deleteUser(idUser:string, name:string): Promise<Result> {
+    public async deleteUser(idUser:string): Promise<Result> {
         try {
+            const user = await repository.user.findFirst({
+                where: { idUser }
+            })
+
+            if (!user) {
+                return {
+                    ok: false,
+                    code: 404,
+                    message: 'User does not exist.'
+                }
+            }
             await repository.user.delete({
                 where: {
                     idUser
@@ -39,7 +70,7 @@ export class UserService {
             return {
                 ok: true,
                 code:200,
-                message: `${name} was excluded.`
+                message: `${user?.username} was excluded.`
             }
         } catch (error: any) {
             return {
@@ -52,6 +83,45 @@ export class UserService {
 
     public async updateUser(data:UserUpdateDTO): Promise<Result> {
         try {
+                const checkID = await repository.user.findFirst({
+                    where:{
+                        idUser:data.idUser
+                    }
+                })
+                if (!checkID) {
+                    return {
+                        ok:false,
+                        code:404,
+                        message: 'User does not exist'
+                    }
+                }
+            
+            if (data.email) {
+                const checkEmail = await repository.user.findUnique({
+                    where: { email:data.email },
+                })
+                if (checkEmail?.email) {
+                    return {
+                        ok: false,
+                        code: 409,
+                        message: "Email already exists"
+                    }
+                } 
+            }
+
+            if (data.username) {
+                const checkUsername = await repository.user.findUnique({
+                    where: { username :data.username},
+                })
+                if (checkUsername) {
+                    return {
+                        ok: false,
+                        code: 409,
+                        message: "Username already exists"
+                    }
+                }  
+            }
+
             const result = await repository.user.update({
                 where: {
                     idUser:data.idUser
@@ -93,7 +163,7 @@ export class UserService {
             if(!user){
                 return {
                     ok: false,
-                    code:400,
+                    code:404,
                     message: 'User not found.',
                 }
             } else {

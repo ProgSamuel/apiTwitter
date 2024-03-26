@@ -58,6 +58,7 @@ export class LikeController {
                 where: { idTwitter: twitterId }
             })
             !reply && notFound(res, "Tweet")
+            
             const existingLike = await repository.like.findFirst({
                 where: {
                     idUser,
