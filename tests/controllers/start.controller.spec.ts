@@ -1,9 +1,11 @@
 import supertest from "supertest";
 import { createApp } from "../../src/Utils/api.helper";
+import { StartController } from "../../src/Controllers/start.controller";
+import { any } from "jest-mock-extended";
 
 describe.skip('Teste do controlador de início', () => {
 
-    test('Deve retornar 200 se o usuário acessar a página inicial', async () => {
+    test.skip('Deve retornar 200 se o usuário acessar a página inicial', async () => {
         const sut = createApp();
 
         const response = await supertest(sut).get('/');
@@ -13,11 +15,13 @@ describe.skip('Teste do controlador de início', () => {
         expect(response.body).toHaveProperty("message", "Welcome! To learn how to use the API, visit: https://github.com/ProgSamuel/apiTwitter.git");
     });
 
-    // test('Deve retornar 500 se houver um erro ao acessar a página inicial', async () => {
-    //     // Suponha que sua API retorne 500 em caso de erro interno do servidor.
-    //     // Você pode simular um erro, por exemplo, acessando um endpoint inexistente.
-    //     const response = await supertest(app).get('/endpoint-inexistente');
+    test('should ',async () => {
+        const sut = createApp()
+        jest.spyOn(StartController.prototype, "start").mockRejectedValue(any)
 
-    //     expect(response.status).toBe(500);
-    // });
+        const result = await supertest(sut).get('/');
+        expect(result.status).toBe(500);
+        expect(result.body).toHaveProperty("ok", false);
+        expect(result.body).toHaveProperty("message", "t");
+    });
 });

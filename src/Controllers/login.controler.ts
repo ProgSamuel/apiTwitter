@@ -28,7 +28,7 @@ export class LoginController {
             return serverError(res, error)
         }
     }
-
+// colocar no service
     public async validateLogin( token: string, idUser: string) {
         try {
             const payload = await validateToken(token) as PayloadToken;
