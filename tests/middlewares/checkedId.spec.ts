@@ -76,4 +76,21 @@ describe('test checkId - middleware', () => {
         expect(result.statusCode).toEqual(200)
         expect(result.body).toHaveProperty("message", "Updated tweet.")
     });
+    test('should return 400 if there is loginController.validateLogin return false', async () => {
+        const sut  = createApp()
+        jest.spyOn(LoginController.prototype,"validateLogin").mockResolvedValue(false)
+        jest.spyOn(UserService.prototype, "updateUser").mockResolvedValue({
+            ok: true,
+            code:200,
+            message: "Updated tweet.",
+        })
+        prismaMock.user.findUnique.mockResolvedValue(user)
+        const result = await supertest(sut).put(`/user/${idUser}`).set('Authorization', authorizationToken).send({
+            name:"teste2"
+        })
+
+        expect(result).toBeDefined()
+        expect(result.ok).toEqual(false)
+        expect(result.statusCode).toEqual(400)
+    });
 });

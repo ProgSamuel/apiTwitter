@@ -5,7 +5,7 @@ import { any } from "jest-mock-extended";
 
 describe.skip('Teste do controlador de início', () => {
 
-    test.skip('Deve retornar 200 se o usuário acessar a página inicial', async () => {
+    test('Deve retornar 200 se o usuário acessar a página inicial', async () => {
         const sut = createApp();
 
         const response = await supertest(sut).get('/');

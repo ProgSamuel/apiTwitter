@@ -10,22 +10,30 @@ export class FollowController {
             // input
             const { idUser, idFollow } = req.params
 
+            if (idUser === idFollow) {
+                return res.status(400).send({
+                    ok: false,
+                    message: "User cannot follow themselves"
+                })
+            }
+
             const user = await repository.user.findFirst({
                 where: { idUser }, select: { username: true, idUser: true, following: true }
             })
 
-            const follow = await repository.user.findUnique({
+            if (!user) {
+                return notFound(res, 'User');
+            }
+
+            const follow = await repository.user.findFirst({
                 where: {
                     idUser: idFollow
                 }, select: { username: true, idUser: true, following: true }
             })
 
-            !follow || !user  && notFound(res, 'User or followed')
-
-            idUser === idFollow && res.status(400).send({
-                ok: false,
-                message: "User cannot follow themselves"
-            })
+            if (!follow) {
+                return notFound(res, 'Followed');
+            }
 
             const existing = await repository.followers.findFirst({
                 where: {
@@ -45,7 +53,7 @@ export class FollowController {
                         userFollow: follow,
                         existingId: existing.id
                 })
-                return res.status(result.code).send({result})
+                return res.status(result.code).send(result)
             }
 
             const result =  await followService.follow({
@@ -56,7 +64,7 @@ export class FollowController {
             })
 
             // output
-            return res.status(result.code).send({result})
+            return res.status(result.code).send(result)
         } catch (error: any) {
             return serverError(res, error);
         }
