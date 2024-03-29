@@ -143,7 +143,7 @@ export class UserService {
             return {
                 ok: true,
                 code:200,
-                message: "Updated tweet.",
+                message: "User updated.",
                 data:result
             }
         } catch (error: any) {

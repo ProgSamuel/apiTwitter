@@ -1,7 +1,5 @@
 import { Request, Response} from "express";
 import { fieldsNotProvided, serverError } from "../Utils/response.helper";
-import { validateToken } from "../Utils/login.helper";
-import { PayloadToken } from "../contracts/login.contract";
 import { LoginService } from "../services/login.service";
 
 export class LoginController {
@@ -26,20 +24,6 @@ export class LoginController {
             }
         } catch (error: any) {
             return serverError(res, error)
-        }
-    }
-// colocar no service
-    public async validateLogin( token: string, idUser: string) {
-        try {
-            const payload = await validateToken(token) as PayloadToken;
-            if (!payload || idUser !== payload.id) {
-                return false
-            }
-            return true
-        } catch (error: any) {
-            return {
-                ok: false
-            }
         }
     }
 }

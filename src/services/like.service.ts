@@ -96,7 +96,6 @@ export class LikeService {
                 ok:true,
                 code:200,
                 message: "Like deleted! As I had already given a like previously, with this request, the like was removed.",
-
             }
         }catch (error:any) {
             return {

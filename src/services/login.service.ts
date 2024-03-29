@@ -1,4 +1,5 @@
-import { generatetoken } from "../Utils/login.helper";
+import { generatetoken, validateToken } from "../Utils/login.helper";
+import { PayloadToken } from "../contracts/login.contract";
 import { Result } from "../contracts/result.contract";
 import repository from "../database/prisma.repository";
 
@@ -98,6 +99,19 @@ export class LoginService {
                 code: 500,
                 message: "Error when logging in.",
                 data: error.toString()
+            }
+        }
+    }
+    public async validateLogin( token: string, idUser: string) {
+        try {
+            const payload = await validateToken(token) as PayloadToken;
+            if (!payload || idUser !== payload.id) {
+                return false
+            }
+            return true
+        } catch (error: any) {
+            return {
+                ok: false
             }
         }
     }

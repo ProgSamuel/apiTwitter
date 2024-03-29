@@ -15,15 +15,52 @@ export class LikeController {
                 where: { idUser }, select: { username: true, idUser: true, following: true }
             })
 
-            !user && notFound(res, "User")
+            if (!user) {
+                return notFound(res, "User")
+            }
 
             const twitter = await repository.twitter.findUnique({
                 where: { idTwitter: twitterId }
             })
 
             if (!twitter) {
-               return this.likeReply(res, twitterId, idUser)
+                // reply 
+                const reply = await repository.reply.findUnique({
+                    where: { idTwitter: twitterId }
+                })
+                if (!reply) {
+                      return res.status(404).send({
+                        ok: false,
+                        message: `Tweet does not exist`,
+                    })
+                } else {
+                    const existingLike = await repository.like.findFirst({
+                        where: {
+                            idUser,
+                            replyId: twitterId,
+                        }, select: {
+                            idLike: true,
+                            idUser: true,
+                            replyId: true,
+                        }
+                    });
+                    
+                    const likeService = new LikeService()
+        
+                    if (existingLike) {
+                        const result = await likeService.unLikeReplyTweet({
+                            idUser, 
+                            twitterId,
+                            idLike: existingLike.idLike
+                        })
+                        return res.status(result.code).send(result)
+                    }
+                    const result = await likeService.likeReplyTweet(idUser, twitterId)
+                    return res.status(result.code).send(result)
+                }
+                
             }
+            
 
             const existingLike = await repository.like.findFirst({
                 where: {
@@ -50,33 +87,5 @@ export class LikeController {
         } catch (error: any) {
             return serverError(res, error);
         }
-    }
-
-    private async likeReply  (res:Response, twitterId:string, idUser:string,){
-        try {
-            const reply = await repository.reply.findUnique({
-                where: { idTwitter: twitterId }
-            })
-            !reply && notFound(res, "Tweet")
-            
-            const existingLike = await repository.like.findFirst({
-                where: {
-                    idUser,
-                    replyId: reply?.idTwitter,
-                }, select: {
-                    idLike: true,
-                    idUser: true,
-                    replyId: true,
-                }
-            });
-            
-            const likeService = new LikeService()
-            if (existingLike) {
-                const result = await likeService.unLikeReplyTweet({idUser, twitterId,idLike: existingLike.idLike})
-                return res.status(result.code).send(result)
-            }
-            const result = await likeService.likeReplyTweet(idUser, twitterId)
-            return res.status(result.code).send(result)
-        } catch (error) { return serverError(res, error) }
     }
 }

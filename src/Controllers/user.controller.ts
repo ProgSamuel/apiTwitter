@@ -8,7 +8,10 @@ export class UserController {
         try {
             // input 
             const { name, email, username, password } = req.body
-            !name || !email || !username || !password && fieldsNotProvided(res)
+
+            if (!name || !email || !username || !password) {
+                return fieldsNotProvided(res)
+            }
 
             //Processing
             const userService = new UserService()

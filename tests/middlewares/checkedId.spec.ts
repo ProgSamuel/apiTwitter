@@ -4,6 +4,7 @@ import { prismaMock } from '../config/prisma.mock'
 import { any } from "jest-mock-extended";
 import { LoginController } from "../../src/Controllers/login.controler";
 import { UserService } from "../../src/services/user.service";
+import { LoginService } from "../../src/services/login.service";
 
 const idUser = "3a690981-b9aa-4655-bf12-373dcbbc0ccb"
 const idFollow = "6d48e03d-e4b5-43e5-84a1-c0e0556b525b"
@@ -60,7 +61,7 @@ describe('test checkId - middleware', () => {
 
     test('should return 200 if the authentication process completed successfully', async () => {
         const sut  = createApp()
-        jest.spyOn(LoginController.prototype,"validateLogin").mockResolvedValue(true)
+        jest.spyOn(LoginService.prototype,"validateLogin").mockResolvedValue(true)
         jest.spyOn(UserService.prototype, "updateUser").mockResolvedValue({
             ok: true,
             code:200,
@@ -78,7 +79,7 @@ describe('test checkId - middleware', () => {
     });
     test('should return 400 if there is loginController.validateLogin return false', async () => {
         const sut  = createApp()
-        jest.spyOn(LoginController.prototype,"validateLogin").mockResolvedValue(false)
+        jest.spyOn(LoginService.prototype,"validateLogin").mockResolvedValue(false)
         jest.spyOn(UserService.prototype, "updateUser").mockResolvedValue({
             ok: true,
             code:200,

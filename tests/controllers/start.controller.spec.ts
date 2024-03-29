@@ -1,12 +1,12 @@
 import supertest from "supertest";
 import { createApp } from "../../src/Utils/api.helper";
 import { StartController } from "../../src/Controllers/start.controller";
-import { any } from "jest-mock-extended";
 
 describe.skip('Teste do controlador de início', () => {
 
-    test('Deve retornar 200 se o usuário acessar a página inicial', async () => {
+    test.skip('Deve retornar 200 se o usuário acessar a página inicial', async () => {
         const sut = createApp();
+        jest.spyOn(StartController.prototype, 'start').mockRejectedValue
 
         const response = await supertest(sut).get('/');
         
@@ -17,7 +17,7 @@ describe.skip('Teste do controlador de início', () => {
 
     test('should ',async () => {
         const sut = createApp()
-        jest.spyOn(StartController.prototype, "start").mockRejectedValue(any)
+        jest.spyOn(StartController.prototype, "start").mockReturnValue(null!)
 
         const result = await supertest(sut).get('/');
         expect(result.status).toBe(500);
