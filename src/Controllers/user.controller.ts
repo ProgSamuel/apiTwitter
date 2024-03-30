@@ -66,25 +66,4 @@ export class UserController {
             return serverError(res, error)
         }
     }
-
-    // Search user
-    public async searcheUser(req: Request, res: Response) {
-        try {
-            //imput
-            const { idUser } = req.params
-
-            //processing
-            const userService = new UserService()
-
-            const result = await userService.searcheUser(idUser)
-            
-            // output
-            return res.status(result.code).send(result)
-
-        } catch (error: any) {
-            return serverError(res, error)
-
-        }
-    }
-
 }

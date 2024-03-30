@@ -2,7 +2,7 @@ import { createApp } from "../../src/Utils/api.helper";
 import supertest from "supertest";
 import { LoginService } from "../../src/services/login.service";
 import { prismaMock } from "../config/prisma.mock";
-import { authorizationTokenTest, exitingLikeReply, idUserTest, likeReplyTweetTest, replyTest, tweetIdTest, tweetTest, userTest } from "../../src/Utils/tests.helper";
+import { authorizationTokenTest, exitingLikeReply, idTweetTest, idUserTest, likeReplyTweetTest, replyTest, tweetTest, userTest } from "../../src/Utils/tests.helper";
 import { LikeService } from "../../src/services/like.service";
 import { any } from "jest-mock-extended";
 
@@ -18,7 +18,7 @@ describe('test like controller', () => {
         prismaMock.user.findFirst.mockResolvedValue(null)
 
         // methodos
-        const result = await supertest(sut).post(`/user/${idUserTest}/like/${tweetIdTest}`).set('Authorization', authorizationTokenTest)
+        const result = await supertest(sut).post(`/user/${idUserTest}/like/${idTweetTest}`).set('Authorization', authorizationTokenTest)
 
         // asserts
         expect(result).toBeDefined()
@@ -41,7 +41,7 @@ describe('test like controller', () => {
         prismaMock.reply.findUnique.mockResolvedValueOnce(null)
     
         // methodos
-        const result = await supertest(sut).post(`/user/${idUserTest}/like/${tweetIdTest}`).set('Authorization', authorizationTokenTest)
+        const result = await supertest(sut).post(`/user/${idUserTest}/like/${idTweetTest}`).set('Authorization', authorizationTokenTest)
     
         // asserts
         expect(result).toBeDefined()
@@ -68,7 +68,7 @@ describe('test like controller', () => {
         })
 
         // methodos
-        const result = await supertest(sut).post(`/user/${idUserTest}/like/${tweetIdTest}`).set('Authorization', authorizationTokenTest)
+        const result = await supertest(sut).post(`/user/${idUserTest}/like/${idTweetTest}`).set('Authorization', authorizationTokenTest)
 
         // asserts
         expect(result).toBeDefined()
@@ -107,7 +107,7 @@ describe('test like controller', () => {
         })
 
         // methodos
-        const result = await supertest(sut).post(`/user/${idUserTest}/like/${tweetIdTest}`).set('Authorization', authorizationTokenTest)
+        const result = await supertest(sut).post(`/user/${idUserTest}/like/${idTweetTest}`).set('Authorization', authorizationTokenTest)
 
         // asserts
         expect(result).toBeDefined()
@@ -126,7 +126,7 @@ describe('test like controller', () => {
         prismaMock.user.findFirst.mockRejectedValue(any)
 
         // methodos
-        const result = await supertest(sut).post(`/user/${idUserTest}/like/${tweetIdTest}`).set('Authorization', authorizationTokenTest)
+        const result = await supertest(sut).post(`/user/${idUserTest}/like/${idTweetTest}`).set('Authorization', authorizationTokenTest)
 
         // asserts
         expect(result).toBeDefined()
@@ -147,7 +147,7 @@ describe('test like controller', () => {
 
         prismaMock.reply.findUnique.mockRejectedValue(any)
         // methodos
-        const result = await supertest(sut).post(`/user/${idUserTest}/like/${tweetIdTest}`).set('Authorization', authorizationTokenTest)
+        const result = await supertest(sut).post(`/user/${idUserTest}/like/${idTweetTest}`).set('Authorization', authorizationTokenTest)
 
         // asserts
         expect(result).toBeDefined()
@@ -175,7 +175,7 @@ describe('test like controller', () => {
         })
 
         // methodos
-        const result = await supertest(sut).post(`/user/${idUserTest}/like/${tweetIdTest}`).set('Authorization', authorizationTokenTest)
+        const result = await supertest(sut).post(`/user/${idUserTest}/like/${idTweetTest}`).set('Authorization', authorizationTokenTest)
 
         // asserts
         expect(result).toBeDefined()
@@ -202,13 +202,13 @@ describe('test like controller', () => {
                 message: `${userTest.username} liked the tweet!`,
                 data: {
                     idUser: userTest.idUser,
-                    twitterId: tweetIdTest,
+                    twitterId: idTweetTest,
                     dthrUpdated: new Date,
                 }
         })
         
         // methodos
-        const result = await supertest(sut).post(`/user/${idUserTest}/like/${tweetIdTest}`).set('Authorization', authorizationTokenTest)
+        const result = await supertest(sut).post(`/user/${idUserTest}/like/${idTweetTest}`).set('Authorization', authorizationTokenTest)
 
         // asserts
         expect(result).toBeDefined()

@@ -154,32 +154,4 @@ export class UserService {
             }
         }
     }
-
-    public async searcheUser(idUser:string): Promise<Result> {
-        try {
-            const user = await repository.user.findFirst({
-                where: { idUser }
-            })
-            if(!user){
-                return {
-                    ok: false,
-                    code:404,
-                    message: 'User not found.',
-                }
-            } else {
-                return {
-                    ok: true,
-                    code:200,
-                    message: 'User successfully obtained',
-                    data: user
-                }
-            }
-        } catch (error: any) {
-            return {
-                ok: false,
-                code: 500,
-                message: error.toString(),
-            }
-        }
-    }
 }

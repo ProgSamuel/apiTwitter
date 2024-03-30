@@ -1,9 +1,7 @@
 import { Request, Response } from "express"
-import { fieldsNotProvided, notFound, serverError, successfully } from "../Utils/response.helper"
+import { fieldsNotProvided, notFound, serverError } from "../Utils/response.helper"
 import repository from "../database/prisma.repository"
-import { Reply } from "../Models/reply.model"
 import { ReplyService } from "../services/reply.service"
-import { LoginService } from "../services/login.service"
 
 export class ReplyController {
       // CREATE REPLY
@@ -31,7 +29,6 @@ export class ReplyController {
     }
 
     // UPDATE REPLY
-
     public async updaterReply(req: Request, res: Response) {
         try {
             // input
