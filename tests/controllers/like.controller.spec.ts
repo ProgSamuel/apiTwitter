@@ -2,7 +2,7 @@ import { createApp } from "../../src/Utils/api.helper";
 import supertest from "supertest";
 import { LoginService } from "../../src/services/login.service";
 import { prismaMock } from "../config/prisma.mock";
-import { authorizationTokenTest, exitingLikeReply, idTweetTest, idUserTest, likeReplyTweetTest, replyTest, tweetTest, userTest } from "../../src/Utils/tests.helper";
+import { authorizationTokenTest, exitingLikeReply, idTweetTest, idUserTest,replyTest, tweetTest, userTest } from "../../src/Utils/tests.helper";
 import { LikeService } from "../../src/services/like.service";
 import { any } from "jest-mock-extended";
 

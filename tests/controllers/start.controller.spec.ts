@@ -4,7 +4,7 @@ import { StartController } from "../../src/Controllers/start.controller";
 
 describe.skip('Teste do controlador de início', () => {
 
-    test.skip('Deve retornar 200 se o usuário acessar a página inicial', async () => {
+    test('Deve retornar 200 se o usuário acessar a página inicial', async () => {
         const sut = createApp();
         jest.spyOn(StartController.prototype, 'start').mockRejectedValue
 

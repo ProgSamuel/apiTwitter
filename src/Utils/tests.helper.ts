@@ -48,8 +48,9 @@ export const tweetTest = {
     type: typeTest.normal,
     dthrCreated: new Date(),
     dthrUpdated: new Date(),
-    idUser: idUserTest
+    idUser: 'idusertest'
 }
+
 export const replyTest = {
     idTwitter:idTweetTest,
     type: typeTest.reply,
@@ -80,3 +81,6 @@ export const createUserTest = {
     username: "username1",
     password: "passwordTeste"
 }
+
+export const contentTest = "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."
+

@@ -10,14 +10,19 @@ export class ReplyController {
             // input
             const { idUser, idTwitter } = req.params
             const { content } = req.body
+            if (!content) {
+                return fieldsNotProvided(res)
+            }
 
-            !content && fieldsNotProvided(res)
-            const twitter = await repository.twitter.findUnique({
+            const tweet = await repository.twitter.findUnique({
                 where: {
                     idTwitter
                 }
             })
-            !twitter && notFound(res, "Tweet")
+
+            if (!tweet) {
+                return notFound(res, "Tweet")
+            }
 
             // processing
             const replyService = new ReplyService()
@@ -35,17 +40,20 @@ export class ReplyController {
             const { idUser, idTwitter } = req.params
             const { content } = req.body
 
-            !content && fieldsNotProvided(res)
-            const twitter = await repository.reply.findUnique({
+            if (!content) {
+                return fieldsNotProvided(res)
+            }
+
+            const tweet = await repository.reply.findUnique({
                 where: {
                     idTwitter
                 }
             })
-            !twitter && notFound(res, "Tweet")
+            if (!tweet) {
+                return notFound(res, "Tweet")
+            }
 
-            const idUserTwitter = twitter?.userId
-
-            if (idUser !== idUserTwitter) {
+            if (idUser !== tweet?.userId) {
                 return res.status(409).send({
                     ok: false,
                     message: "Data conflict: Tweet does not match the User id entered."

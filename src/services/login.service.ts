@@ -110,9 +110,7 @@ export class LoginService {
             }
             return true
         } catch (error: any) {
-            return {
-                ok: false
-            }
+            return false
         }
     }
 }

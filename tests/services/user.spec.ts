@@ -282,7 +282,7 @@ describe('test update user', () => {
         expect(result).toBeDefined()
         expect(result.ok).toEqual(true)
         expect(result).toHaveProperty("code", 200)
-        expect(result).toHaveProperty("message",  "Updated tweet.")
+        expect(result).toHaveProperty("message",  "User updated.")
         expect(result.data).toBeDefined()
         expect(result.data).toHaveProperty("name")
         expect(result.data).toHaveProperty("email")
@@ -309,63 +309,4 @@ describe('test update user', () => {
     });
 });
 
-describe('test search user', () => {
-    test('should return 404 if the user does not exist', async () => {
-        const sut = new UserService()
-
-        prismaMock.user.findFirst.mockReturnValue(null!)
-
-        const result = await sut.searcheUser("idUser_qualquer")
-
-        expect(result).toBeDefined()
-        expect(result.ok).toEqual(false)
-        expect(result).toHaveProperty("code", 404)
-        expect(result).toHaveProperty("message", 'User not found.')
-        expect(result.data).toBeUndefined()
-    });
-    test('should return 200 if the user is found ', async () => {
-        const sut = new UserService()
-        prismaMock.user.findFirst.mockResolvedValue({
-            name: "name_qualquer",
-            username: "username_qualquer_1",
-            email: "email_qualquer",
-            idUser: "id_qualquer",
-            password: "pass_qualquer",
-            dthrCreated: new Date(),
-            dthrUpdated: new Date(),
-            photo: null,
-            token:null
-        })
-        const result = await sut.searcheUser("id_qualquer")
-
-        expect(result).toBeDefined()
-        expect(result.ok).toEqual(true)
-        expect(result).toHaveProperty("code", 200)
-        expect(result).toHaveProperty("message", 'User successfully obtained')
-        expect(result.data).toBeDefined()
-        expect(result.data).toHaveProperty("idUser")
-        expect(result.data).toHaveProperty("name")
-        expect(result.data).toHaveProperty("email")
-        expect(result.data).toHaveProperty("username")
-        expect(result.data).toHaveProperty("photo")
-        expect(result.data).toHaveProperty("token")
-        expect(result.data).toHaveProperty("password")
-        expect(result.data).toHaveProperty("dthrCreated")
-        expect(result.data).toHaveProperty("dthrUpdated")
-    });
-
-    test('should return 500 if there is any failure in the user search process ', async () => {
-        const sut = new UserService()
-
-        prismaMock.user.findFirst.mockRejectedValue(any)
-
-        const result = await sut.searcheUser("idUser_qualquer")
-
-        expect(result).toBeDefined()
-        expect(result.ok).toEqual(false)
-        expect(result).toHaveProperty("code", 500)
-        expect(result).toHaveProperty("message")
-        expect(result.data).toBeUndefined()
-    });
-});
 

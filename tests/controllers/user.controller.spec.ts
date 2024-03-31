@@ -75,7 +75,7 @@ describe('test create user', () => {
     });
 });
 
-describe.skip('test update user', () => {
+describe('test update user', () => {
     test('should return 400 if no update data is provided', async () => {
         const sut = createApp()
 
@@ -111,7 +111,7 @@ describe.skip('test update user', () => {
         expect(result.body).toHaveProperty("message")
     });
 
-    test.skip('should return 200 if a user is updated', async () => {
+    test('should return 200 if a user is updated', async () => {
         const sut = createApp()
 
         // Mock middleware and user existence
@@ -136,8 +136,8 @@ describe.skip('test update user', () => {
     });
 });
 
-describe.skip('test delete user', () => {
-  test('should return 500 if the process of deleting the user failed', async () => {
+describe('test delete user', () => {
+  test.skip('should return 500 if the process of deleting the user failed', async () => {
     const sut = createApp()
      // Mock middleware and user existence
      jest.spyOn(LoginService.prototype, "validateLogin").mockResolvedValue(true);
@@ -153,7 +153,7 @@ describe.skip('test delete user', () => {
     expect(result.statusCode).toEqual(500)
     expect(result.body).toHaveProperty("message", "Fill in all mandatory fields")
   });
-  test('should return 200 if user is deleted', async () => {
+  test.skip('should return 200 if user is deleted', async () => {
     const sut = createApp()
      // Mock middleware and user existence
      jest.spyOn(LoginService.prototype, "validateLogin").mockResolvedValue(true);

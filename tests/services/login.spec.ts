@@ -2,6 +2,7 @@ import { any } from 'jest-mock-extended';
 import { LoginService } from '../../src/services/login.service'
 import { prismaMock } from '../config/prisma.mock'
 import * as dotenv from "dotenv";
+import { authorizationTokenTest, idUserTest } from '../../src/Utils/tests.helper';
 dotenv.config();
 
 describe('email login tests', () => {
@@ -241,7 +242,7 @@ describe('username login tests', () => {
     const loginService = new LoginService()
     prismaMock.user.findFirst.mockRejectedValue(any)
 
-    const result = await loginService.loginEmail(
+    const result = await loginService.loginUsername(
       "teste", "teste9090"
     )
     expect(result).toBeDefined()
@@ -252,4 +253,30 @@ describe('username login tests', () => {
     expect(result.data).toBeDefined()
   });
 })
+
+describe('test validate login', () => {
+  test.skip('should return true if the data is correct', async () => {
+   
+
+  });
+  test('should return false if data is incorrect', async () => {
+    const loginService = new LoginService()
+
+    const result = await loginService.validateLogin(authorizationTokenTest, idUserTest )
+
+    expect(result).toBeDefined()
+    expect(result).toEqual(false)
+  });
+  test('should return false if there is any failure', async () => {
+    const loginService = new LoginService()
+    jest.spyOn(LoginService.prototype, 'validateLogin').mockRejectedValue
+
+    const result = await loginService.validateLogin(authorizationTokenTest, idUserTest )
+
+    expect(result).toBeDefined()
+    expect(result).toEqual(false)
+
+  });
+})
+
 
