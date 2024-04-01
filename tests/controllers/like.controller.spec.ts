@@ -48,7 +48,6 @@ describe('test like controller', () => {
         // expect(result.status).toEqual(404)
         expect(result.body).toHaveProperty("message", "Tweet does not exist")
     });
-    
     test('should return 200 if the user unlikes a tweet reply', async () => {
         const sut = createApp()
         // middlwware
@@ -77,7 +76,7 @@ describe('test like controller', () => {
         expect(result.body).toHaveProperty("message","Like deleted! As I had already given a like previously, with this request, the like was removed.")
         expect(result.body.data).toBeUndefined()
     });
-    test.skip('should return 200 if the user likes a tweet reply', async () => {
+    test('should return 200 if the user likes a tweet reply', async () => {
         const sut = createApp()
         // middlwware
         jest.spyOn(LoginService.prototype, "validateLogin").mockResolvedValue(true)
@@ -88,8 +87,8 @@ describe('test like controller', () => {
         prismaMock.twitter.findUnique.mockResolvedValueOnce(null)
 
         prismaMock.reply.findUnique.mockResolvedValueOnce(replyTest)
-        prismaMock.like.findFirst.mockResolvedValueOnce(exitingLikeReply)
-        jest.spyOn(LikeService.prototype, 'likeReplyTweet').mockResolvedValue({
+        prismaMock.like.findFirst.mockResolvedValueOnce(null)
+        jest.spyOn(LikeService.prototype, 'likeReplyTweet').mockResolvedValueOnce({
             ok: true,
                 code: 200,
                 message: `Liked the tweet!`,
@@ -100,7 +99,7 @@ describe('test like controller', () => {
                 }
         })
         
-        jest.spyOn(LikeService.prototype, 'unLikeReplyTweet').mockResolvedValue({
+        jest.spyOn(LikeService.prototype, 'unLikeReplyTweet').mockResolvedValueOnce({
             ok:true,
                 code:200,
                 message: "Like deleted! As I had already given a like previously, with this request, the like was removed.",
@@ -114,7 +113,7 @@ describe('test like controller', () => {
         expect(result.ok).toEqual(true)
         expect(result.statusCode).toEqual(200)
         expect(result.body).toHaveProperty("message",`Liked the tweet!`)
-        expect(result.body.data).toBeUndefined()
+        expect(result.body.data).toBeDefined()
     });
     test('should return 500 if there is a failure in the like/unlike process on a tweet', async () => {
         const sut = createApp()

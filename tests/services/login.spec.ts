@@ -3,7 +3,10 @@ import { LoginService } from '../../src/services/login.service'
 import { prismaMock } from '../config/prisma.mock'
 import * as dotenv from "dotenv";
 import { authorizationTokenTest, idUserTest } from '../../src/Utils/tests.helper';
+
 dotenv.config();
+import jwt from 'jsonwebtoken'
+
 
 describe('email login tests', () => {
   test('should return 404 if email or password are not provided', async () => {
@@ -255,17 +258,22 @@ describe('username login tests', () => {
 })
 
 describe('test validate login', () => {
-  test.skip('should return true if the data is correct', async () => {
-   
+  
+  test('should return true if the data is correct', async () => {
+  
+    const originalVerify = jwt.verify;
+    jwt.verify = jest.fn().mockReturnValue({ id: 'id_do_usuario' });
 
-  });
-  test('should return false if data is incorrect', async () => {
-    const loginService = new LoginService()
+    const idUserTest = 'id_do_usuario';
+    const authorizationTokenTest = 'token_de_autorizacao';
 
-    const result = await loginService.validateLogin(authorizationTokenTest, idUserTest )
+    const loginService = new LoginService();
 
-    expect(result).toBeDefined()
-    expect(result).toEqual(false)
+    const result = await loginService.validateLogin(authorizationTokenTest, idUserTest);
+
+    jwt.verify = originalVerify;
+
+    expect(result).toBe(true);
   });
   test('should return false if there is any failure', async () => {
     const loginService = new LoginService()

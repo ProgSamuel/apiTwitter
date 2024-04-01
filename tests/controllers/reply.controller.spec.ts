@@ -188,5 +188,83 @@ describe('test updater Reply', () => {
 })
 
 describe('test delete reply ', () => {
-    
+    test('should return 404 if no tweet is found to delete', async () => {
+        const sut = createApp();
+
+        // Mock middleware and user existence
+        jest.spyOn(LoginService.prototype, "validateLogin").mockResolvedValue(true);
+        prismaMock.user.findUnique.mockResolvedValue(userTest);
+
+        // Mocking controller
+        prismaMock.reply.findUnique.mockResolvedValue(null)
+
+        const result = await supertest(sut).delete(`/user/${idUserTest}/reply/${idTweetTest}`).set('Authorization', authorizationTokenTest)
+
+        expect(result).toBeDefined();
+        expect(result.ok).toEqual(false);
+        expect(result.statusCode).toEqual(404);
+        expect(result.body).toHaveProperty("message", 'Tweet does not exist');
+    });
+    test('should return 409 I know user tries to delete a tweet reply that is not yours', async () => {
+        const sut = createApp();
+
+        // Mock middleware and user existence
+        jest.spyOn(LoginService.prototype, "validateLogin").mockResolvedValue(true);
+        prismaMock.user.findUnique.mockResolvedValue(userTest);
+
+        // Mocking controller
+        prismaMock.reply.findUnique.mockResolvedValue(replyTest)
+        jest.spyOn(ReplyService.prototype, 'updaterReply').mockResolvedValue({
+            ok: true,
+            code: 200,
+            message: "Updated tweet",
+            data: replyTest
+        })
+
+        const result = await supertest(sut).delete(`/user/${idUserTest + '1'}/reply/${idTweetTest}`).set('Authorization', authorizationTokenTest)
+
+        expect(result).toBeDefined();
+        expect(result.ok).toEqual(false);
+        expect(result.body).toHaveProperty("message", "Data conflict: Tweet does not match the User id entered.")
+        expect(result.body.data).toBeUndefined()
+    });
+    test('should return 500 if there is a failure in the process of deleting a reply to a tweet', async () => {
+        const sut = createApp();
+
+        // Mock middleware and user existence
+        jest.spyOn(LoginService.prototype, "validateLogin").mockResolvedValue(true);
+        prismaMock.user.findUnique.mockResolvedValue(userTest);
+
+        // Mocking controller
+        prismaMock.reply.findUnique.mockRejectedValue(any)
+
+        const result = await supertest(sut).delete(`/user/${idUserTest}/reply/${idTweetTest}`).set('Authorization', authorizationTokenTest)
+
+        expect(result).toBeDefined();
+        expect(result.ok).toEqual(false);
+        expect(result.statusCode).toEqual(500);
+        expect(result.body).toHaveProperty("message")
+    });
+    test('should return 200 if a reply to a tweet is deleted', async () => {
+        const sut = createApp();
+
+        // Mock middleware and user existence
+        jest.spyOn(LoginService.prototype, "validateLogin").mockResolvedValue(true);
+        prismaMock.user.findUnique.mockResolvedValue(userTest);
+
+        // Mocking controller
+        prismaMock.reply.findUnique.mockResolvedValue(replyTest)
+        jest.spyOn(ReplyService.prototype, 'deleteReply').mockResolvedValue({
+            ok: true,
+            code: 200,
+            message: "Tweet deleted."
+        })
+
+        const result = await supertest(sut).delete(`/user/${idUserTest}/reply/${idTweetTest}`).set('Authorization', authorizationTokenTest)
+
+        expect(result).toBeDefined();
+        expect(result.ok).toEqual(true);
+        expect(result.body).toHaveProperty("message", "Tweet deleted.")
+        expect(result.body.data).toBeUndefined()
+    });
 });

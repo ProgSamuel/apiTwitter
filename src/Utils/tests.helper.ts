@@ -84,3 +84,13 @@ export const createUserTest = {
 
 export const contentTest = "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."
 
+export const homeTest = {
+    idUser: 'idUserTest',
+    content: 'contentTest',
+    idTwitter: 'tweetTest',
+    user: 'userTest',
+    dthrUpdated: new Date(),
+    likes: [],
+    replies: []
+};
+

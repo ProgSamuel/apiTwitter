@@ -5,8 +5,6 @@ import { any } from "jest-mock-extended";
 import { prismaMock } from "../config/prisma.mock";
 import { userLoginTest, userLoginUsernameTest, userTest } from "../../src/Utils/tests.helper";
 
-
-
 describe('Integrated tests for login via API', () => {
     test('should return 400 if the email or username and password is not provided ', async () => {
         // SUT => when testing for the api, it will be the api itself

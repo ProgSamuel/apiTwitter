@@ -19,11 +19,11 @@ export class LikeController {
                 return notFound(res, "User")
             }
 
-            const twitter = await repository.twitter.findUnique({
+            const tweet = await repository.twitter.findUnique({
                 where: { idTwitter: twitterId }
             })
 
-            if (!twitter) {
+            if (!tweet) {
                 // reply 
                 const reply = await repository.reply.findUnique({
                     where: { idTwitter: twitterId }
@@ -48,10 +48,7 @@ export class LikeController {
                     const likeService = new LikeService()
         
                     if (existingLike) {
-                        const result = await likeService.unLikeReplyTweet({
-                            idUser, 
-                            twitterId,
-                            idLike: existingLike.idLike
+                        const result = await likeService.unLikeReplyTweet({idUser, twitterId,idLike: existingLike.idLike
                         })
                         return res.status(result.code).send(result)
                     }

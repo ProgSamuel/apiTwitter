@@ -2,7 +2,6 @@ import supertest from "supertest";
 import { createApp } from "../../src/Utils/api.helper";
 import { prismaMock } from '../config/prisma.mock'
 import { any } from "jest-mock-extended";
-import { LoginController } from "../../src/Controllers/login.controler";
 import { UserService } from "../../src/services/user.service";
 import { LoginService } from "../../src/services/login.service";
 

@@ -11,7 +11,9 @@ export class TwitterController {
             const { idUser } = req.params
             const { content } = req.body
 
-            !content && fieldsNotProvided(res)
+            if (!content) {
+                return fieldsNotProvided(res)
+            }
             // processing 
             const twitterService = new TwitterService()
             const result = await twitterService.createTweet(content, idUser)
@@ -57,7 +59,8 @@ export class TwitterController {
             const { idUser, idTwitter } = req.params
             const { content } = req.body
 
-            !content && fieldsNotProvided(res)
+            if (!content) return fieldsNotProvided(res)
+
             //processing
             const twitterService = new TwitterService()
             const result = await twitterService.updateTweet({idTwitter, content, idUser})

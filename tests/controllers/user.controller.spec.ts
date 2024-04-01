@@ -137,42 +137,42 @@ describe('test update user', () => {
 });
 
 describe('test delete user', () => {
-  test.skip('should return 500 if the process of deleting the user failed', async () => {
-    const sut = createApp()
-     // Mock middleware and user existence
-     jest.spyOn(LoginService.prototype, "validateLogin").mockResolvedValue(true);
-     prismaMock.user.findUnique.mockRejectedValue(userTest);
-
-     // Mocking controller
-     jest.spyOn(UserService.prototype, 'createUser').mockRejectedValue(any)
-
-    const result = await supertest(sut).post(`/`).send(idUserTest)
-
-    expect(result).toBeDefined()
-    expect(result.ok).toEqual(false)
-    expect(result.statusCode).toEqual(500)
-    expect(result.body).toHaveProperty("message", "Fill in all mandatory fields")
-  });
-  test.skip('should return 200 if user is deleted', async () => {
+  test('should return 500 if the process of deleting the user failed', async () => {
     const sut = createApp()
      // Mock middleware and user existence
      jest.spyOn(LoginService.prototype, "validateLogin").mockResolvedValue(true);
      prismaMock.user.findUnique.mockResolvedValue(userTest);
 
      // Mocking controller
-     jest.spyOn(UserService.prototype, 'createUser').mockResolvedValue(
+     jest.spyOn(UserService.prototype, 'deleteUser').mockRejectedValue(any)
+
+    const result = await supertest(sut).delete(`/user/${idUserTest}`).set('Authorization', authorizationTokenTest)
+
+    expect(result).toBeDefined()
+    expect(result.ok).toEqual(false)
+    expect(result.statusCode).toEqual(500)
+    expect(result.body).toHaveProperty("message")
+  });
+  test('should return 200 if user is deleted', async () => {
+    const sut = createApp()
+     // Mock middleware and user existence
+     jest.spyOn(LoginService.prototype, "validateLogin").mockResolvedValue(true);
+     prismaMock.user.findUnique.mockResolvedValue(userTest);
+
+     // Mocking controller
+     jest.spyOn(UserService.prototype, 'deleteUser').mockResolvedValue(
         {
             ok: true,
             code:200,
-            message: `${userTest.username} was excluded.`
+            message: `User was excluded.`
         }
      )
 
-    const result = await supertest(sut).post(`/`).send(idUserTest)
+    const result = await supertest(sut).delete(`/user/${idUserTest}`).set('Authorization', authorizationTokenTest)
 
     expect(result).toBeDefined()
     expect(result.ok).toEqual(true)
     expect(result.statusCode).toEqual(200)
-    expect(result.body).toHaveProperty("message", "Fill in all mandatory fields")
+    expect(result.body).toHaveProperty("message", `User was excluded.`)
   });
 })

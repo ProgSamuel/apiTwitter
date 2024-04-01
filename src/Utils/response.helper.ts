@@ -24,25 +24,3 @@ export function fieldsNotProvided (res:Response){
     }
     )
 }
-
-export function successfully(res:Response, entity:string, result:any){
-    res.status(201).send({
-        ok: true,
-        message: `${entity} created successfully`,
-        data: result
-    })
-}
-
-export function existing (res:Response, entity:string){
-    res.status(409).send({
-        ok:false,
-        message: `${entity} already exists`
-    })
-}
-
-export function invalidData (res:Response){
-    res.status(400).send({
-        ok:false,
-        message: 'Invalid data'
-    })
-}

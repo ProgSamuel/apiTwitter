@@ -81,16 +81,17 @@ export class ReplyController {
 
             // processing
 
-            const twitter = await repository.reply.findUnique({
+            const tweet = await repository.reply.findUnique({
                 where: {
                     idTwitter
                 }
             })
-            !twitter && notFound(res, "Tweet")
+            if (!tweet) {
+                return notFound(res, "Tweet")
+            }
 
-            const idUserTwitter = twitter?.userId
 
-            if (idUser !== idUserTwitter) {
+            if (idUser !== tweet?.userId) {
                 return res.status(409).send({
                     ok: false,
                     message: "Data conflict: Tweet does not match the User id entered."
