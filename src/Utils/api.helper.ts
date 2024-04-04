@@ -32,7 +32,7 @@ export function createApp() {
     app.delete('/user/:idUser', checkId, userController.deleteUser) // DELETE
 
     // TWEETS
-    app.get('/user/:idUser/home', checkId, twitterController.viewTweets) // VIEW ALL TWEETE
+    app.get('/user/:idUser/home', checkId, twitterController.viewTweets) // VIEW ALL TWEETS
     app.post('/user/:idUser/', checkId, twitterController.createTweet) // CREATE TWEETE
     app.put('/user/:idUser/twitter/:idTwitter', checkId, twitterController.updateTweet) // UPDATE TWEETE
     app.delete('/user/:idUser/twitter/:idTwitter', checkId, twitterController.deleteTweet) // DELETE TWEETE

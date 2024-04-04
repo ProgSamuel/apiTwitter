@@ -23,7 +23,7 @@ export class LoginService {
             if (user?.password !== password ) {
                 return {
                     ok:false,
-                    code: 400,
+                    code: 401,
                     message: "Invalid password"
                 }
             }
@@ -72,7 +72,7 @@ export class LoginService {
             if (user?.password !== password ) {
                 return {
                     ok:false,
-                    code: 400,
+                    code: 401,
                     message: "Invalid password"
                 }
             }

@@ -45,7 +45,7 @@ describe('email login tests', () => {
 
   })
 
-  test('should return 400 if password is incorrect ', async () => {
+  test('should return 401 if password is incorrect ', async () => {
     //sut
     const loginService = new LoginService()
 
@@ -70,7 +70,7 @@ describe('email login tests', () => {
     // asserts
     expect(result).toBeDefined()
     expect(result.ok).toEqual(false)
-    expect(result).toHaveProperty("code", 400)
+    expect(result).toHaveProperty("code", 401)
     expect(result).toHaveProperty("message", "Invalid password")
     expect(result.data).toBeUndefined()
   })
@@ -168,7 +168,7 @@ describe('username login tests', () => {
     expect(result.data).toBeUndefined()
   })
 
-  test('should return 400 if password is incorrect ', async () => {
+  test('should return 401 if password is incorrect ', async () => {
     //sut
     const loginService = new LoginService()
     // simulated behavior 
@@ -191,7 +191,7 @@ describe('username login tests', () => {
     // asserts
     expect(result).toBeDefined()
     expect(result.ok).toEqual(false)
-    expect(result).toHaveProperty("code", 400)
+    expect(result).toHaveProperty("code", 401)
     expect(result).toHaveProperty("message", "Invalid password")
     expect(result.data).toBeUndefined()
   })

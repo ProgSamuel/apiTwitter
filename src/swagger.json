@@ -1,0 +1,587 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API inspired by twitter/x",
+    "description": "The API is a platform for basic interactions in a social network. It allows for the creation, updating, and deletion of users, as well as offering functionalities to manage tweets, such as creating, viewing, updating, and deleting them. Users can also interact with tweets through replies and likes. Additionally, the API provides the ability to follow or unfollow other users. All endpoints are protected by a middleware that verifies the validity of the provided IDs and tokens."
+  },
+  "termsOfService": "",
+  "contact": { "email": "progsamu@gmail.com" },
+  "version": "2.0.0",
+  "servers": [{ "url": "http://localhost:3335/", "description": "" }],
+  "paths": {
+    "/": {
+      "post": {
+        "summary": "Create user",
+        "description": "This route is responsible for creating a new user",
+        "tags": ["User"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUser"
+              },
+              "examples": {
+                "CreateUser": {
+                  "value": {
+                    "name": "John Smith",
+                    "email": "jhonsmith@example.com",
+                    "username": "JohnSmith001",
+                    "password": "password1234"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Fill in all mandatory fields"
+          },
+          "409": {
+            "description": "Email or Username already exists"
+          },
+          "200": {
+            "description": "User created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "code": { "type": "integer", "example": 200 },
+                    "message": { "type": "string", "example": "User created." },
+                    "data": { "$ref": "#/components/schemas/CreateUser" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "summary": "Login",
+        "description": "This route is responsible for user login. Must provide email or username, along with password.",
+        "tags": ["User"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              },
+              "examples": {
+                "Login": {
+                  "value": {
+                    "email": "jhonsmith@example.com",
+                    "username": "JohnSmith001",
+                    "password": "password1234"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Fill in all mandatory fields"
+          },
+          "404": {
+            "description": "Email or Username does not exist"
+          },
+          "401": {
+            "description": "Invalid password"
+          },
+          "200": {
+            "description": "Login successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "code": { "type": "integer", "example": 200 },
+                    "message": { "type": "string", "example": "Login ok" },
+                    "data": { "$ref": "#/components/schemas/Login" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/user/{idUser}": {
+      "put": {
+        "summary": "Update user",
+        "description": "This route is responsible for updating a user's data. At least one piece of data (name, email, username, or password) must be provided.",
+        "tags": ["User"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUser"
+              },
+              "examples": {
+                "Update": {
+                  "value": {
+                    "name": "John Smith New",
+                    "email": "newjhonsmith@example.com",
+                    "username": "NewJohnSmith001",
+                    "password": "newpassword1234"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "This return may indicate 2 points. 1: No update data was provided. 2: The token entered was not validated."
+          },
+          "401":{
+            "description":"Authentication token not provided."
+          },
+          "404": {
+            "description": "User does not exist."
+          },
+          "409": {
+            "description": "Email or Username already exists."
+          },
+          "200": {
+            "description": "User updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "code": { "type": "integer", "example": 200 },
+                    "message": { "type": "string", "example": "User updated."},
+                    "data": { "$ref": "#/components/schemas/UpdateUser" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete user",
+        "description": "Route responsible for deleting a user.",
+        "tags": ["User"],
+        "responses": {
+          "400": {
+            "description": "The token entered was not validated."
+          },
+          "401":{
+            "description":"Authentication token not provided."
+          },
+          "404": {
+            "description": "User does not exist."
+          },
+          "200": {
+            "description": "User was excluded."
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Tweet",
+        "description": "This route is responsible for creating a user's tweet.",
+        "tags": ["Tweet"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Content"
+              },
+              "examples": {
+                "CreateTweet": {
+                  "value": {
+                    "content": "This is an example of a tweet's content."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "The token entered was not validated."
+          },
+          "401":{
+            "description":"Authentication token not provided."
+          },
+          "404": {
+            "description": "User does not exist."
+          },
+          "200": {
+            "description":  "Tweet created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "code": { "type": "integer", "example": 200 },
+                    "message": { "type": "string", "example": "Tweet created."},
+                    "data": { "type": "string", "example": "Tweet created."}
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "get": {
+        "summary": "View user tweets",
+        "description": "This route is responsible for displaying the user's tweets.",
+        "tags": ["Tweet"],
+        "responses": {
+          "400": {
+            "description": "The token entered was not validated."
+          },
+          "401":{
+            "description":"Authentication token not provided."
+          },
+          "404": {
+            "description": "User does not exist."
+          },
+          "200": {
+            "description":  "You have X tweets",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "code": { "type": "integer", "example": 200 },
+                    "message": { "type": "string", "example": "You have X tweets"}
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/user/{idUser}/home": {
+      "get": {
+        "summary": "View all tweets",
+        "description": "This route is responsible for displaying all tweets on the platform.",
+        "tags": ["Tweet"],
+        "responses": {
+          "400": {
+            "description": "The token entered was not validated."
+          },
+          "401": {
+            "description": "Invalid password"
+          },
+          "200": {
+            "description": "Your home",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "code": { "type": "integer", "example": 200 },
+                    "message": { "type": "string", "example": "Your home" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/user/{idUser}/twitter/{idTwitter}": {
+      "put": {
+        "summary": "Update tweet",
+        "description": "This route is responsible for updating a tweet. To update, you must provide the updated content of the tweet.",
+        "tags": ["Tweet"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Content"
+              },
+              "examples": {
+                "UpdateTweet": {
+                  "value": {
+                    "content":"This is an example of the content of an updated tweet."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "This return has 2 possible causes. 1: No updated content was provided. 2: The provided token could not be validated."
+          },
+          "404": {
+            "description": "Tweet does not exist"
+          },
+          "401": {
+            "description": "Invalid password"
+          },
+          "409":{
+            "description":"Data conflict: Tweet does not match the User id entered."
+          },
+          "200": {
+            "description": "Updated tweet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "code": { "type": "integer", "example": 200 },
+                    "message": { "type": "string", "example": "Updated tweet" },
+                    "data": { "$ref": "#/components/schemas/Content" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete tweet",
+        "description": "This route is responsible for deleting a tweet.",
+        "tags": ["Tweet"],
+        "responses": {
+          "400": {
+            "description": "The provided token could not be validated."
+          },
+          "404": {
+            "description": "Tweet does not exist"
+          },
+          "401": {
+            "description": "Invalid password"
+          },
+          "409":{
+            "description":"Data conflict: Tweet does not match the User id entered."
+          },
+          "200": {
+            "description": "Tweet deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "code": { "type": "integer", "example": 200 },
+                    "message": { "type": "string", "example": "Tweet deleted" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/user/{idUser}/reply/{idTwitter}": {
+      "post": {
+        "summary": "Create reply",
+        "description": "This route is responsible for creating a reply to a tweet.",
+        "tags": ["Reply"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Content"
+              },
+              "examples": {
+                "CreateReply": {
+                  "value": {
+                    "content":"This is an example of the content of a tweet reply."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "This return has 2 possible causes. 1: No response content was provided. 2: The provided token could not be validated."
+          },
+          "404": {
+            "description": "Tweet does not exist"
+          },
+          "401": {
+            "description": "Invalid password"
+          },
+          "201": {
+            "description": "Reply created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "code": { "type": "integer", "example": 201 },
+                    "message": { "type": "string", "example": "Reply created successfully." },
+                    "data": { "$ref": "#/components/schemas/Content" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update reply",
+        "description": "This route is responsible for updating a reply to a tweet.",
+        "tags": ["Reply"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Content"
+              },
+              "examples": {
+                "UpdateReply": {
+                  "value": {
+                    "content":"This is an example of the content of a tweet reply."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "This return has 2 possible causes. 1: No response content was provided. 2: The provided token could not be validated."
+          },
+          "404": {
+            "description": "Tweet does not exist"
+          },
+          "401": {
+            "description": "Invalid password"
+          },
+          "200": {
+            "description": "Reply updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "code": { "type": "integer", "example": 200 },
+                    "message": { "type": "string", "example": "Updated reply" },
+                    "data": { "$ref": "#/components/schemas/Content" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete reply",
+        "description": "This route is responsible for deleting a reply to a tweet.",
+        "tags": ["Reply"],
+        "responses": {
+          "400": {
+            "description": "The provided token could not be validated."
+          },
+          "404": {
+            "description": "Tweet does not exist"
+          },
+          "401": {
+            "description": "Invalid password"
+          },
+          "200": {
+            "description": "Reply deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "code": { "type": "integer", "example": 200 },
+                    "message": { "type": "string", "example": "Reply deleted." }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateUser": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "username": { "type": "string" },
+          "password": { "type": "string" }
+        }
+      },
+      "Login": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "username": { "type": "string" },
+          "password": { "type": "string" }
+        }
+      },
+      "UpdateUser": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "username": { "type": "string" },
+          "password": { "type": "string" }
+        }
+      },
+      "Content": {
+        "type": "object",
+        "properties": {
+          "content": { "type": "string" }
+        }
+      }
+    }
+  }
+}
